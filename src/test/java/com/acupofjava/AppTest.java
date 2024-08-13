@@ -1,4 +1,4 @@
-package com.acupofjava.scrambler;
+package com.acupofjava;
 
 import static org.junit.Assert.assertTrue;
 
