@@ -2,19 +2,9 @@ package com.acupofjava;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import static org.junit.Assert.*;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-{
-    /**
-     * Rigorous Test :-)
-     */
+public class AppTest {
     @Test
     public void scrambleReturnsEmptyStringGivenEmptyString() {
         assertEquals("", App.scrambleWord(""));
@@ -32,7 +22,7 @@ public class AppTest
 
     @Test
     public void scrambleReturnsDifferentWordThanGivenWordLongerThanOneCharacter() {
-        assertNotEquals("cat", App.scrambleWord("cat"));
+        assertNotEquals("cat", App.scrambleWord("cat")); // TODO: test with wow
     }
 
     @Test
@@ -46,7 +36,8 @@ public class AppTest
         String sortedResult = result.chars()
                 .sorted()
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();;
+                .toString();
         assertEquals(sortedGiven, sortedResult);
     }
+
 }
