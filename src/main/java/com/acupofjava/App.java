@@ -1,20 +1,39 @@
 package com.acupofjava;
 
 import java.awt.*;
+import java.util.List;
+
 import javax.swing.*;
 
 public class App {
 
     public static void main(String[] args) {
-        JLabel scrambledWordLabel = createScrambledWordLabel();
+        List<String> words = List.of("hello", "world", "cat", "wow");
+        String currentWord = words.get(0);
+
+        JLabel scrambledWordLabel = createScrambledWordLabel(scrambleWord(currentWord));
         TextField userInput = createUserInputTextField();
         JButton submitButton = createSubmitButton();
+        Box healthDisplay = Box.createHorizontalBox();
+        healthDisplay.add(createHeart());
+        healthDisplay.add(createHeart());
+        healthDisplay.add(createHeart());
+        healthDisplay.add(createHeart());
+        Box wordLabel = createWordLabel(scrambledWordLabel);
+        Box inputArea = createInputArea(userInput, submitButton);
+        Box outerBox = createOuterBox(healthDisplay, wordLabel, inputArea);
+
         submitButton.addActionListener(e -> {
-            scrambledWordLabel.setText(userInput.getText());
+            String userInputText = userInput.getText();
+            if (userInputText.equals(currentWord)) {
+                System.out.println("WIN");
+                scrambledWordLabel.setText("VICTORY");
+            } else {
+                System.out.println("LOSE");
+                healthDisplay.remove(0);
+                healthDisplay.repaint();
+            }
         });
-        Box topBox = createTopBox(scrambledWordLabel);
-        Box bottomBox = createBottomBox(userInput, submitButton);
-        Box outerBox = createOuterBox(topBox, bottomBox);
 
         JFrame frame = new JFrame("Scrambler");
         frame.add(outerBox);
@@ -24,7 +43,13 @@ public class App {
         frame.setVisible(true);
     }
 
-    private static Box createBottomBox(TextField userInput, JButton submitButton) {
+    private static JComponent createHeart() {
+        var heart = new JLabel("❤️");
+        heart.setForeground(Color.RED);
+        return heart;
+    }
+
+    private static Box createInputArea(TextField userInput, JButton submitButton) {
         Box bottomBox = Box.createHorizontalBox();
         bottomBox.add(Box.createHorizontalStrut(10));
         bottomBox.add(userInput);
@@ -34,7 +59,7 @@ public class App {
         return bottomBox;
     }
 
-    private static Box createTopBox(JLabel scrambledWordLabel) {
+    private static Box createWordLabel(JLabel scrambledWordLabel) {
         Box topBox = Box.createHorizontalBox();
         topBox.add(Box.createHorizontalStrut(10));
         topBox.add(scrambledWordLabel);
@@ -42,21 +67,21 @@ public class App {
         return topBox;
     }
 
-    private static Box createOuterBox(Box topBox, Box bottomBox) {
+    private static Box createOuterBox(Box healthBox, Box wordBox, Box inputBox) {
         Box outerBox = Box.createVerticalBox();
         outerBox.setOpaque(true);
         outerBox.setBackground(new Color(25, 25, 61));
 
-
         outerBox.add(Box.createVerticalStrut(100));
-        outerBox.add(topBox);
-        outerBox.add(bottomBox);
+        outerBox.add(healthBox);
+        outerBox.add(wordBox);
+        outerBox.add(inputBox);
         outerBox.add(Box.createVerticalStrut(100));
         return outerBox;
     }
 
-    private static JLabel createScrambledWordLabel() {
-        JLabel scrambledWordLabel = new JLabel("uhakcip");
+    private static JLabel createScrambledWordLabel(String text) {
+        JLabel scrambledWordLabel = new JLabel(text);
         scrambledWordLabel.setFont(new Font("Arial", Font.BOLD, 40));
         scrambledWordLabel.setForeground(new Color(154, 201, 79));
         return scrambledWordLabel;
