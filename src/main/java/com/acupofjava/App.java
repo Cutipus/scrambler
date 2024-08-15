@@ -75,5 +75,7 @@ public class App {
         return userInput;
     }
 
-
+    public static String scrambleWord(String word) {
+        return new StringBuilder(word).reverse().toString();
+    }
 }
