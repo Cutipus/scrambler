@@ -2,6 +2,7 @@ package com.acupofjava;
 
 import java.awt.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.*;
 
@@ -10,18 +11,19 @@ public class App {
     public static void main(String[] args) {
         List<String> words = List.of("hello", "world", "cat", "wow");
         String currentWord = words.get(0);
+        AtomicInteger hp = new AtomicInteger(3);
 
         JLabel scrambledWordLabel = createScrambledWordLabel(scrambleWord(currentWord));
         TextField userInput = createUserInputTextField();
         JButton submitButton = createSubmitButton();
-        Box healthDisplay = Box.createHorizontalBox();
-        healthDisplay.add(createHeart());
-        healthDisplay.add(createHeart());
-        healthDisplay.add(createHeart());
-        healthDisplay.add(createHeart());
+        Box healthDisplay = createHealthDisplay(hp.get());
         Box wordLabel = createWordLabel(scrambledWordLabel);
         Box inputArea = createInputArea(userInput, submitButton);
-        Box outerBox = createOuterBox(healthDisplay, wordLabel, inputArea);
+        Box gameScene = createOuterBox(healthDisplay, wordLabel, inputArea);
+        JPanel gameOverScene = new JPanel();
+        Box mainScene = Box.createHorizontalBox();
+        mainScene.add(gameScene);
+        JFrame frame = createFrame(mainScene);
 
         submitButton.addActionListener(e -> {
             String userInputText = userInput.getText();
@@ -30,17 +32,37 @@ public class App {
                 scrambledWordLabel.setText("VICTORY");
             } else {
                 System.out.println("LOSE");
-                healthDisplay.remove(0);
-                healthDisplay.repaint();
+                hp.decrementAndGet();
+                if (hp.get() == 0) {
+                    System.out.println("You've lost the game");
+                    submitButton.setEnabled(false);
+                    mainScene.remove(gameScene);
+                    mainScene.add(gameOverScene);
+                    frame.pack();
+                } else {
+                    healthDisplay.remove(0);
+                    healthDisplay.repaint();
+                }
             }
         });
 
+        frame.setVisible(true);
+    }
+
+    private static Box createHealthDisplay(int hp) {
+        Box healthDisplay = Box.createHorizontalBox();
+        for (int i = 0; i < hp; i++)
+            healthDisplay.add(createHeart());
+        return healthDisplay;
+    }
+
+    private static JFrame createFrame(Box mainScene) {
         JFrame frame = new JFrame("Scrambler");
-        frame.add(outerBox);
+        frame.add(mainScene);
         frame.setMinimumSize(new Dimension(300, 500));
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        return frame;
     }
 
     private static JComponent createHeart() {
