@@ -4,7 +4,8 @@
 
 ## Todo
 - [ ] Palindromes should still come out scrambled
-- [ ] Make a GAME OVER screen
+- [x] Make a GAME OVER screen
+- [ ] Make a GAME OVER screen better looking
 - [ ] Display new challenge if you win
 - [ ] Get a logo for the app
 - [ ] Get a logo for the health display

@@ -31,10 +31,15 @@ public class App {
         Box quitArea = createQuitArea(quitButton);
         // Displays number of hearts, scrambled word, text field for user input and submit / quit button
         Box gameScene = createOuterBox(healthDisplay, wordLabel, inputArea, quitButton);
-        JPanel gameOverScene = new JPanel();
+        JLabel gameOverText = new JLabel("Game Over");
+        Box gameOverScreen = createGameOverScreen(gameOverText, quitButton);
+
+
+
         Box mainScene = Box.createHorizontalBox();
         // Adds all the displays (number of hearts, scrambled word, text field for user input and submit button) to mainscene
         mainScene.add(gameScene);
+//        mainScene.add(gameOverScreen);
         JFrame frame = createFrame(mainScene);
         frame.setVisible(true);
 
@@ -51,8 +56,9 @@ public class App {
                     System.out.println("You've lost the game");
                     submitButton.setEnabled(false);
                     mainScene.remove(gameScene);
-                    mainScene.add(gameOverScene);
+                    mainScene.add(gameOverScreen);
                     frame.pack();
+                    mainScene.repaint();
                 } else {
                     healthDisplay.remove(0);
                     healthDisplay.repaint();
@@ -140,6 +146,21 @@ public class App {
         button.setFocusable(false);
         button.setFont(new Font("Arial", Font.BOLD, 15));
         return button;
+    }
+
+    private static Box createGameOverScreen(JLabel gameOverText, JButton quitButton) {
+        Box outer = Box.createHorizontalBox();
+        outer.setOpaque(true);
+        outer.setBackground(Color.RED);
+        Box inner = Box.createVerticalBox();
+        inner.setOpaque(true);
+        inner.setBackground(Color.BLUE);
+        inner.add(gameOverText);
+        inner.add(quitButton);
+        outer.add(Box.createGlue());
+        outer.add(inner);
+        outer.add(Box.createGlue());
+        return outer;
     }
 
     private static TextField createUserInputTextField() {
