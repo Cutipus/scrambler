@@ -9,22 +9,34 @@ import javax.swing.*;
 public class App {
 
     public static void main(String[] args) {
+        // Holds list of words to be unscrambled
         List<String> words = List.of("hello", "world", "cat", "wow");
+        // Stores one word from the
         String currentWord = words.get(0);
+        // Determines how much health player has, changing the number changes the number of hearts
         AtomicInteger hp = new AtomicInteger(3);
 
+        // Stores scrambled word
         JLabel scrambledWordLabel = createScrambledWordLabel(scrambleWord(currentWord));
+        // Text field to take user input
         TextField userInput = createUserInputTextField();
         JButton submitButton = createSubmitButton();
+        // Displays the number of hearts
         Box healthDisplay = createHealthDisplay(hp.get());
+        // Displays scrambled word
         Box wordLabel = createWordLabel(scrambledWordLabel);
+        // Displays text field for user input and submit button
         Box inputArea = createInputArea(userInput, submitButton);
+        // Displays number of hearts, scrambled word, text field for user input and submit button
         Box gameScene = createOuterBox(healthDisplay, wordLabel, inputArea);
         JPanel gameOverScene = new JPanel();
         Box mainScene = Box.createHorizontalBox();
+        // Adds all the displays (number of hearts, scrambled word, text field for user input and submit button) to mainscene
         mainScene.add(gameScene);
         JFrame frame = createFrame(mainScene);
+        frame.setVisible(true);
 
+        // Checks if user entered the correct answer and responds accordingly
         submitButton.addActionListener(e -> {
             String userInputText = userInput.getText();
             if (userInputText.equals(currentWord)) {
@@ -46,9 +58,9 @@ public class App {
             }
         });
 
-        frame.setVisible(true);
     }
 
+    // Adds specified number of hearts as health display
     private static Box createHealthDisplay(int hp) {
         Box healthDisplay = Box.createHorizontalBox();
         for (int i = 0; i < hp; i++)
@@ -56,6 +68,7 @@ public class App {
         return healthDisplay;
     }
 
+    // Main window of the game
     private static JFrame createFrame(Box mainScene) {
         JFrame frame = new JFrame("Scrambler");
         frame.add(mainScene);
