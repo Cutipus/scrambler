@@ -20,15 +20,17 @@ public class App {
         JLabel scrambledWordLabel = createScrambledWordLabel(scrambleWord(currentWord));
         // Text field to take user input
         TextField userInput = createUserInputTextField();
-        JButton submitButton = createSubmitButton();
+        JButton submitButton = createButton("Submit");
+        JButton quitButton = createButton("Quit");
         // Displays the number of hearts
         Box healthDisplay = createHealthDisplay(hp.get());
         // Displays scrambled word
         Box wordLabel = createWordLabel(scrambledWordLabel);
         // Displays text field for user input and submit button
         Box inputArea = createInputArea(userInput, submitButton);
-        // Displays number of hearts, scrambled word, text field for user input and submit button
-        Box gameScene = createOuterBox(healthDisplay, wordLabel, inputArea);
+        Box quitArea = createQuitArea(quitButton);
+        // Displays number of hearts, scrambled word, text field for user input and submit / quit button
+        Box gameScene = createOuterBox(healthDisplay, wordLabel, inputArea, quitButton);
         JPanel gameOverScene = new JPanel();
         Box mainScene = Box.createHorizontalBox();
         // Adds all the displays (number of hearts, scrambled word, text field for user input and submit button) to mainscene
@@ -58,6 +60,8 @@ public class App {
             }
         });
 
+        // Quits game
+        quitButton.addActionListener(e -> System.exit(0));
     }
 
     // Adds specified number of hearts as health display
@@ -94,6 +98,14 @@ public class App {
         return bottomBox;
     }
 
+    private static Box createQuitArea(JButton quitButton) {
+        Box quitButtonBox = Box.createHorizontalBox();
+        quitButtonBox.add(quitButton);
+        quitButtonBox.setForeground(Color.RED);
+        quitButtonBox.setOpaque(true);
+        return quitButtonBox;
+    }
+
     private static Box createWordLabel(JLabel scrambledWordLabel) {
         Box topBox = Box.createHorizontalBox();
         topBox.add(Box.createHorizontalStrut(10));
@@ -102,7 +114,7 @@ public class App {
         return topBox;
     }
 
-    private static Box createOuterBox(Box healthBox, Box wordBox, Box inputBox) {
+    private static Box createOuterBox(JComponent healthBox, JComponent wordBox, JComponent inputBox, JComponent quitButton) {
         Box outerBox = Box.createVerticalBox();
         outerBox.setOpaque(true);
         outerBox.setBackground(new Color(25, 25, 61));
@@ -111,6 +123,7 @@ public class App {
         outerBox.add(healthBox);
         outerBox.add(wordBox);
         outerBox.add(inputBox);
+        outerBox.add(quitButton);
         outerBox.add(Box.createVerticalStrut(100));
         return outerBox;
     }
@@ -122,11 +135,11 @@ public class App {
         return scrambledWordLabel;
     }
 
-    private static JButton createSubmitButton() {
-        JButton submitButton = new JButton("Submit");
-        submitButton.setFocusable(false);
-        submitButton.setFont(new Font("Arial", Font.BOLD, 15));
-        return submitButton;
+    private static JButton createButton(String title) {
+        JButton button = new JButton(title);
+        button.setFocusable(false);
+        button.setFont(new Font("Arial", Font.BOLD, 15));
+        return button;
     }
 
     private static TextField createUserInputTextField() {

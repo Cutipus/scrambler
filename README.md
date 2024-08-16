@@ -9,4 +9,4 @@
 - [ ] Get a logo for the app
 - [ ] Get a logo for the health display
 - [ ] Display game statistics in GAME OVER scene
-- [ ] Add button to quit the game
+- [x] Add button to quit the game
