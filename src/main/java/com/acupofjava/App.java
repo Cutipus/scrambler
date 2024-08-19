@@ -1,7 +1,9 @@
 package com.acupofjava;
 
 import java.awt.*;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.*;
 
@@ -10,17 +12,17 @@ public class App {
     public static void main(String[] args) {
         // Holds list of words to be unscrambled
         List<String> words = List.of("hello", "world", "cat", "wow");
-
-        WordGameLogic game = new WordGameLogic(words.get(0), 3);
+        Iterator<String> wordIterator = words.iterator();
+        AtomicReference<WordGameLogic> game = new AtomicReference<>(new WordGameLogic(wordIterator.next(), 3));
 
         // Stores scrambled word
-        JLabel scrambledWordLabel = createScrambledWordLabel(game.scrambleWord());
+        JLabel scrambledWordLabel = createScrambledWordLabel(game.get().scrambleWord());
         // Text field to take user input
         TextField userInput = createUserInputTextField();
         JButton submitButton = createButton("Submit");
         JButton quitButton = createButton("Quit");
         // Displays the number of hearts
-        Box healthDisplay = createHealthDisplay(game.getHP());
+        Box healthDisplay = createHealthDisplay(game.get().getHP());
         // Displays scrambled word
         Box wordLabel = createWordLabel(scrambledWordLabel);
         // Displays text field for user input and submit button
@@ -43,10 +45,19 @@ public class App {
         submitButton.addActionListener(e -> {
             String userInputText = userInput.getText();
 
-            switch (game.tryWord(userInputText)) {
+            switch (game.get().tryWord(userInputText)) {
                 case VICTORY -> {
-                    System.out.println("WIN");
-                    scrambledWordLabel.setText("VICTORY");
+                    if (wordIterator.hasNext()) {
+                        game.set(new WordGameLogic(wordIterator.next(), game.get().getHP()));
+                        System.out.println("WIN");
+                        scrambledWordLabel.setText(game.get().scrambleWord());
+                    } else {
+                        submitButton.setEnabled(false);
+                        mainScene.remove(gameScene);
+                        mainScene.add(gameOverScreen);
+                        frame.pack();
+                        mainScene.repaint();
+                    }
                 }
                 case DEFEAT -> {
                     System.out.println("You've lost the game");
@@ -111,7 +122,7 @@ public class App {
     }
 
     private static Box createOuterBox(JComponent healthBox, JComponent wordBox, JComponent inputBox,
-            JComponent quitButton) {
+                                      JComponent quitButton) {
         Box outerBox = Box.createVerticalBox();
         outerBox.setOpaque(true);
         outerBox.setBackground(new Color(25, 25, 61));
