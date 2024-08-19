@@ -9,6 +9,8 @@ import javax.swing.*;
 
 public class App {
 
+    public static final Color BACKGROUND = new Color(25, 25, 61);
+
     public static void main(String[] args) {
         // Holds list of words to be unscrambled
         List<String> words = List.of("hello", "world", "cat", "wow");
@@ -31,6 +33,8 @@ public class App {
         // submit / quit button
         Box gameScene = createOuterBox(healthDisplay, wordLabel, inputArea, quitButton);
         JLabel gameOverText = new JLabel("Game Over");
+        gameOverText.setForeground(Color.RED);
+        gameOverText.setFont(new Font("Arial", Font.BOLD, 40));
         Box gameOverScreen = createGameOverScreen(gameOverText, quitButton);
 
         Box mainScene = Box.createHorizontalBox();
@@ -125,7 +129,7 @@ public class App {
                                       JComponent quitButton) {
         Box outerBox = Box.createVerticalBox();
         outerBox.setOpaque(true);
-        outerBox.setBackground(new Color(25, 25, 61));
+        outerBox.setBackground(BACKGROUND);
 
         outerBox.add(Box.createVerticalStrut(100));
         outerBox.add(healthBox);
@@ -153,10 +157,8 @@ public class App {
     private static Box createGameOverScreen(JLabel gameOverText, JButton quitButton) {
         Box outer = Box.createHorizontalBox();
         outer.setOpaque(true);
-        outer.setBackground(Color.RED);
+        outer.setBackground(BACKGROUND);
         Box inner = Box.createVerticalBox();
-        inner.setOpaque(true);
-        inner.setBackground(Color.BLUE);
         inner.add(gameOverText);
         inner.add(quitButton);
         outer.add(Box.createGlue());
