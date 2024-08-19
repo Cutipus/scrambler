@@ -52,4 +52,39 @@ public class WordGameLogicTest {
         assertThrows(IllegalStateException.class, () -> game.tryWord("not!"));
     }
 
+    @Test
+    public void scrambleReturnsEmptyStringGivenEmptyString() {
+        assertEquals("", new WordGameLogic("", 2).scrambleWord());
+    }
+
+    @Test
+    public void sameCharacter() {
+        assertEquals("a", new WordGameLogic("a", 2).scrambleWord());
+    }
+
+    @Test
+    public void scrambleReturnsReverseOfStringOfLengthTwo() {
+        assertEquals("ba", new WordGameLogic("ab", 2).scrambleWord());
+    }
+
+    @Test
+    public void scrambleReturnsDifferentWordThanGivenWordLongerThanOneCharacter() {
+        assertNotEquals("cat", new WordGameLogic("cat", 2).scrambleWord()); // TODO: test with wow
+    }
+
+    @Test
+    public void scrambleReturnsSameCharactersAsGivenString() {
+        String given = "hello";
+        String result = new WordGameLogic(given, 2).scrambleWord();
+        String sortedGiven = given.chars()
+                .sorted()
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        String sortedResult = result.chars()
+                .sorted()
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        assertEquals(sortedGiven, sortedResult);
+    }
+
 }

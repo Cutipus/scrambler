@@ -4,8 +4,12 @@ public class WordGameLogic {
     private String currentWord;
     private int hp;
 
-    public String getCurrentWord() {
-        return currentWord;
+    public WordGameLogic(String currentWord, int hp) {
+        if (hp <= 0) {
+            throw new IllegalArgumentException("HP value invalid. Make sure it's 1 or greater.\nHP value: " + hp);
+        }
+        this.currentWord = currentWord;
+        this.hp = hp;
     }
 
     public int getHP() {
@@ -14,14 +18,6 @@ public class WordGameLogic {
 
     public String getWord() {
         return currentWord;
-    }
-
-    public WordGameLogic(String currentWord, int hp) {
-        if (hp <= 0) {
-            throw new IllegalArgumentException("HP value invalid. Make sure it's 1 or greater.\nHP value: " + hp);
-        }
-        this.currentWord = currentWord;
-        this.hp = hp;
     }
 
     public boolean tryWord(String userGuess) {
@@ -35,4 +31,9 @@ public class WordGameLogic {
             return true;
         }
     }
+
+    public String scrambleWord() {
+        return new StringBuilder(this.currentWord).reverse().toString();
+    }
+
 }

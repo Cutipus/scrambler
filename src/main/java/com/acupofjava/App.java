@@ -14,7 +14,7 @@ public class App {
         WordGameLogic game = new WordGameLogic(words.get(0), 3);
 
         // Stores scrambled word
-        JLabel scrambledWordLabel = createScrambledWordLabel(scrambleWord(game.getWord()));
+        JLabel scrambledWordLabel = createScrambledWordLabel(game.scrambleWord());
         // Text field to take user input
         TextField userInput = createUserInputTextField();
         JButton submitButton = createButton("Submit");
@@ -158,7 +158,4 @@ public class App {
         return userInput;
     }
 
-    public static String scrambleWord(String word) {
-        return new StringBuilder(word).reverse().toString();
-    }
 }
