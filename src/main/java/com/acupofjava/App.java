@@ -2,7 +2,6 @@ package com.acupofjava;
 
 import java.awt.*;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.*;
 
@@ -11,48 +10,45 @@ public class App {
     public static void main(String[] args) {
         // Holds list of words to be unscrambled
         List<String> words = List.of("hello", "world", "cat", "wow");
-        // Stores one word from the
-        String currentWord = words.get(0);
-        // Determines how much health player has, changing the number changes the number of hearts
-        AtomicInteger hp = new AtomicInteger(3);
+
+        WordGameLogic game = new WordGameLogic(words.get(0), 3);
 
         // Stores scrambled word
-        JLabel scrambledWordLabel = createScrambledWordLabel(scrambleWord(currentWord));
+        JLabel scrambledWordLabel = createScrambledWordLabel(scrambleWord(game.getWord()));
         // Text field to take user input
         TextField userInput = createUserInputTextField();
         JButton submitButton = createButton("Submit");
         JButton quitButton = createButton("Quit");
         // Displays the number of hearts
-        Box healthDisplay = createHealthDisplay(hp.get());
+        Box healthDisplay = createHealthDisplay(game.getHP());
         // Displays scrambled word
         Box wordLabel = createWordLabel(scrambledWordLabel);
         // Displays text field for user input and submit button
         Box inputArea = createInputArea(userInput, submitButton);
-        Box quitArea = createQuitArea(quitButton);
-        // Displays number of hearts, scrambled word, text field for user input and submit / quit button
+        // Displays number of hearts, scrambled word, text field for user input and
+        // submit / quit button
         Box gameScene = createOuterBox(healthDisplay, wordLabel, inputArea, quitButton);
         JLabel gameOverText = new JLabel("Game Over");
         Box gameOverScreen = createGameOverScreen(gameOverText, quitButton);
 
-
-
         Box mainScene = Box.createHorizontalBox();
-        // Adds all the displays (number of hearts, scrambled word, text field for user input and submit button) to mainscene
+        // Adds all the displays (number of hearts, scrambled word, text field for user
+        // input and submit button) to mainscene
         mainScene.add(gameScene);
-//        mainScene.add(gameOverScreen);
+        // mainScene.add(gameOverScreen);
         JFrame frame = createFrame(mainScene);
         frame.setVisible(true);
 
         // Checks if user entered the correct answer and responds accordingly
         submitButton.addActionListener(e -> {
             String userInputText = userInput.getText();
-            if (userInputText.equals(currentWord)) {
+
+            if (game.tryWord(userInputText)) {
                 System.out.println("WIN");
                 scrambledWordLabel.setText("VICTORY");
             } else {
                 System.out.println("LOSE");
-                hp.decrementAndGet();
-                if (hp.get() == 0) {
+                if (game.getHP() == 0) {
                     System.out.println("You've lost the game");
                     submitButton.setEnabled(false);
                     mainScene.remove(gameScene);
@@ -104,14 +100,6 @@ public class App {
         return bottomBox;
     }
 
-    private static Box createQuitArea(JButton quitButton) {
-        Box quitButtonBox = Box.createHorizontalBox();
-        quitButtonBox.add(quitButton);
-        quitButtonBox.setForeground(Color.RED);
-        quitButtonBox.setOpaque(true);
-        return quitButtonBox;
-    }
-
     private static Box createWordLabel(JLabel scrambledWordLabel) {
         Box topBox = Box.createHorizontalBox();
         topBox.add(Box.createHorizontalStrut(10));
@@ -120,7 +108,8 @@ public class App {
         return topBox;
     }
 
-    private static Box createOuterBox(JComponent healthBox, JComponent wordBox, JComponent inputBox, JComponent quitButton) {
+    private static Box createOuterBox(JComponent healthBox, JComponent wordBox, JComponent inputBox,
+            JComponent quitButton) {
         Box outerBox = Box.createVerticalBox();
         outerBox.setOpaque(true);
         outerBox.setBackground(new Color(25, 25, 61));

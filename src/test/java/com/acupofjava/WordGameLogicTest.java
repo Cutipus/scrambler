@@ -37,4 +37,19 @@ public class WordGameLogicTest {
             new WordGameLogic("hello", 6);
         });
     }
+
+    @Test
+    public void guessingWrongDecrementsHP() {
+        var game = new WordGameLogic("hello", 3);
+        game.tryWord("not!");
+        assertEquals(2, game.getHP());
+    }
+
+    @Test
+    public void guessingWrongWith1HPLeftThrowsException() {
+        var game = new WordGameLogic("hello", 1);
+        game.tryWord("noooo");
+        assertThrows(IllegalStateException.class, () -> game.tryWord("not!"));
+    }
+
 }
