@@ -43,23 +43,25 @@ public class App {
         submitButton.addActionListener(e -> {
             String userInputText = userInput.getText();
 
-            if (game.tryWord(userInputText)) {
-                System.out.println("WIN");
-                scrambledWordLabel.setText("VICTORY");
-            } else {
-                System.out.println("LOSE");
-                if (game.getHP() == 0) {
+            switch (game.tryWord(userInputText)) {
+                case VICTORY -> {
+                    System.out.println("WIN");
+                    scrambledWordLabel.setText("VICTORY");
+                }
+                case DEFEAT -> {
                     System.out.println("You've lost the game");
                     submitButton.setEnabled(false);
                     mainScene.remove(gameScene);
                     mainScene.add(gameOverScreen);
                     frame.pack();
                     mainScene.repaint();
-                } else {
+                }
+                case WRONG_ANSWER_STILL_ALIVE -> {
                     healthDisplay.remove(0);
                     healthDisplay.repaint();
                 }
             }
+
         });
 
         // Quits game

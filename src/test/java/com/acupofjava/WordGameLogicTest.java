@@ -6,23 +6,23 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WordGameLogicTest {
 
     @Test
-    public void tryingSameWordShouldReturnTrue() {
+    public void tryingSameWordShouldReturnVICTORY() {
         WordGameLogic obj = new WordGameLogic("Hello", 3);
-        assertTrue(obj.tryWord("Hello"));
+        assertEquals(WordGameLogic.State.VICTORY, obj.tryWord("Hello"));
     }
 
     @Test
     public void capitalOrLowercaseLettersDontMatter() {
         WordGameLogic obj = new WordGameLogic("HeLlo", 3);
-        assertTrue(obj.tryWord("hello"));
-        assertTrue(obj.tryWord("heLLo"));
-        assertTrue(obj.tryWord("HELLO"));
+        assertEquals(WordGameLogic.State.VICTORY, obj.tryWord("hello"));
+        assertEquals(WordGameLogic.State.VICTORY, obj.tryWord("heLLo"));
+        assertEquals(WordGameLogic.State.VICTORY, obj.tryWord("HELLO"));
     }
 
     @Test
     public void shouldFailWhenWrongWordIsEntered() {
         WordGameLogic obj = new WordGameLogic("bye", 3);
-        assertFalse(obj.tryWord("Hello"));
+        assertEquals(WordGameLogic.State.WRONG_ANSWER_STILL_ALIVE, obj.tryWord("Hello"));
     }
 
     @Test
@@ -46,9 +46,15 @@ public class WordGameLogicTest {
     }
 
     @Test
-    public void guessingWrongWith1HPLeftThrowsException() {
+    public void guessingWrongWith1HPLeftReturnsDEFEAT() {
         var game = new WordGameLogic("hello", 1);
-        game.tryWord("noooo");
+        assertEquals(WordGameLogic.State.DEFEAT, game.tryWord("not!"));
+    }
+
+    @Test
+    public void guessingWrongAfterDEFEATThrowsException() {
+        var game = new WordGameLogic("hello", 1);
+        game.tryWord("not!");
         assertThrows(IllegalStateException.class, () -> game.tryWord("not!"));
     }
 
