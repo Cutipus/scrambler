@@ -155,12 +155,22 @@ public class App {
     }
 
     private static Box createGameOverScreen(JLabel gameOverText, JButton quitButton) {
+        Box gameOverBox = Box.createHorizontalBox();
+        gameOverBox.add(Box.createGlue());
+        gameOverBox.add(gameOverText);
+        gameOverBox.add(Box.createGlue());
+        Box quitButtonBox = Box.createHorizontalBox();
+        quitButtonBox.add(Box.createGlue());
+        quitButtonBox.add(quitButton);
+        quitButtonBox.add(Box.createGlue());
+        Box inner = Box.createVerticalBox();
+        inner.add(Box.createGlue());
+        inner.add(gameOverBox);
+        inner.add(quitButtonBox);
+        inner.add(Box.createGlue());
         Box outer = Box.createHorizontalBox();
         outer.setOpaque(true);
         outer.setBackground(BACKGROUND);
-        Box inner = Box.createVerticalBox();
-        inner.add(gameOverText);
-        inner.add(quitButton);
         outer.add(Box.createGlue());
         outer.add(inner);
         outer.add(Box.createGlue());
