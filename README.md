@@ -12,3 +12,4 @@
 - [ ] Get a logo for the health display
 - [ ] Display game statistics in GAME OVER scene
 - [x] Add button to quit the game
+- [ ] Add difficulty levels
