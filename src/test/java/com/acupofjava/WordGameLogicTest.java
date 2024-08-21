@@ -1,6 +1,11 @@
 package com.acupofjava;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WordGameLogicTest {
@@ -91,6 +96,21 @@ public class WordGameLogicTest {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
         assertEquals(sortedGiven, sortedResult);
+    }
+
+    @Test
+    public void dictionary() {
+        Stream<String> dictionary = Stream.of("live", "evil", "veil", "vile", "cat", "act", "no", "on");
+        Map<String, Set<String>> languageNames = dictionary.collect(
+                Collectors.toMap(
+                        word -> {
+                            char[] characters = word.toCharArray();
+                            Arrays.sort(characters);
+                            return new String(characters);
+                        },
+                        Collections::singleton,
+                        (existingValue, newValue) -> Stream.concat(existingValue.stream(), newValue.stream()).collect(Collectors.toSet())));
+        assertEquals(null, languageNames.get("eilv"));
     }
 
 }

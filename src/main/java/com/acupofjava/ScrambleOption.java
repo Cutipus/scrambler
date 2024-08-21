@@ -2,6 +2,10 @@ package com.acupofjava;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public record ScrambleOption(String characters, List<String> allWords) {
     public String scramble(int i) throws ImpossiblePermutationException {
