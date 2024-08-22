@@ -69,7 +69,7 @@ public class App {
         // Checks if user entered the correct answer and responds accordingly
         submitButton.addActionListener(clickEvent -> {
             String userInputText = userInput.getText();
-            boolean match = scrambles.get().match(userInputText); // TODO: match against scramble option
+            boolean match = scrambles.get().matches(userInputText); // TODO: match against scramble option
 
             if (match) {
                 // VICTORY

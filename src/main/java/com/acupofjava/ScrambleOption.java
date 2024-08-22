@@ -34,7 +34,7 @@ public record ScrambleOption(String characters, Set<String> allWords) {
         }
     }
 
-    public boolean match(String userInputText) {
+    public boolean matches(String userInputText) {
         return allWords.contains(userInputText);
     }
 }
