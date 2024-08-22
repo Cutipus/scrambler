@@ -15,18 +15,38 @@ public class App {
 
     public static void main(String[] args) {
         // Holds list of words to be unscrambled
-        List<String> words = List.of("hello", "world", "cat", "wow", "live", "evil", "veil", "vile", "cat", "act", "no", "on", "bat", "tab");
-        Iterator<String> wordIterator = words.iterator();
-        AtomicReference<WordGameLogic> game = new AtomicReference<>(new WordGameLogic(wordIterator.next(), 3));
+        List<String> words = List.of("hello", "world", "cat", "wow", "live", "evil", "veil", "vile", "cat", "act", "no",
+                "on", "bat", "tab");
+        Map<String, Set<String>> wordPermutations = validWordsPermutation(words.stream());
+
+        Iterator<String> challengeKeyList = wordPermutations.keySet().stream().iterator();
+        var firstScramble = new ScrambleOption(challengeKeyList.next(), wordPermutations.get(challengeKeyList.next()));
+
+        AtomicReference<ScrambleOption> scrambles = new AtomicReference<>(firstScramble);
+        Hitpoints hp = new Hitpoints(3);
 
         // Stores scrambled word
-        JLabel scrambledWordLabel = createScrambledWordLabel(game.get().scrambleWord());
+        JLabel scrambledWordLabel;
+
+        boolean goodWord = false;
+        String scrambled = null;
+        while (!goodWord) {
+            try {
+                scrambled = scrambles.get().scramble((int) (Math.random() * Integer.MAX_VALUE));
+                goodWord = true;
+            } catch (ImpossiblePermutationException e) {
+                scrambles.set(
+                        new ScrambleOption(challengeKeyList.next(), wordPermutations.get(challengeKeyList.next())));
+            }
+        }
+        scrambledWordLabel = createScrambledWordLabel(scrambled);
+
         // Text field to take user input
         TextField userInput = createUserInputTextField();
         JButton submitButton = createButton("Submit");
         JButton quitButton = createButton("Quit");
         // Displays the number of hearts
-        Box healthDisplay = createHealthDisplay(game.get().getHP());
+        Box healthDisplay = createHealthDisplay(3);
         // Displays scrambled word
         Box wordLabel = createWordLabel(scrambledWordLabel);
         // Displays text field for user input and submit button
@@ -48,37 +68,55 @@ public class App {
         frame.setVisible(true);
 
         // Checks if user entered the correct answer and responds accordingly
-        submitButton.addActionListener(e -> {
+        submitButton.addActionListener(clickEvent -> {
             String userInputText = userInput.getText();
+            boolean match = false; // TODO: match against scramble option
 
-            switch (game.get().tryWord(userInputText)) {
-                case VICTORY -> {
-                    if (wordIterator.hasNext()) {
-                        game.set(new WordGameLogic(wordIterator.next(), game.get().getHP()));
-                        System.out.println("WIN");
-                        scrambledWordLabel.setText(game.get().scrambleWord());
-                    } else {
-                        submitButton.setEnabled(false);
-                        mainScene.remove(gameScene);
-                        mainScene.add(gameOverScreen);
-                        frame.pack();
-                        mainScene.repaint();
+            if (match) {
+                // VICTORY
+                if (challengeKeyList.hasNext()) {
+                    String nextChallengeKey = challengeKeyList.next();
+                    scrambles.set(new ScrambleOption(nextChallengeKey, wordPermutations.get(nextChallengeKey)));
+                    System.out.println("WIN");
+
+                    boolean goodWord_ = false;
+                    String scrambled_ = null;
+                    while (!goodWord_) {
+                        try {
+                            scrambled_ = scrambles.get().scramble((int) (Math.random() * Integer.MAX_VALUE));
+                            goodWord_ = true;
+                        } catch (ImpossiblePermutationException e) {
+                            scrambles.set(
+                                    new ScrambleOption(challengeKeyList.next(),
+                                            wordPermutations.get(challengeKeyList.next())));
+                        }
                     }
-                }
-                case DEFEAT -> {
-                    System.out.println("You've lost the game");
+                    scrambledWordLabel.setText(scrambled_);
+                } else {
                     submitButton.setEnabled(false);
                     mainScene.remove(gameScene);
                     mainScene.add(gameOverScreen);
                     frame.pack();
                     mainScene.repaint();
                 }
-                case WRONG_ANSWER_STILL_ALIVE -> {
-                    healthDisplay.remove(0);
-                    healthDisplay.repaint();
+
+            } else {
+                switch (hp.hit()) {
+                    case ALIVE -> {
+                        healthDisplay.remove(0);
+                        healthDisplay.repaint();
+                    }
+                    case DEAD -> {
+                        System.out.println("You've lost the game");
+                        submitButton.setEnabled(false);
+                        mainScene.remove(gameScene);
+                        mainScene.add(gameOverScreen);
+                        frame.pack();
+                        mainScene.repaint();
+
+                    }
                 }
             }
-
         });
 
         // Quits game
@@ -128,7 +166,7 @@ public class App {
     }
 
     private static Box createOuterBox(JComponent healthBox, JComponent wordBox, JComponent inputBox,
-                                      JComponent quitButton) {
+            JComponent quitButton) {
         Box outerBox = Box.createVerticalBox();
         outerBox.setOpaque(true);
         outerBox.setBackground(BACKGROUND);
@@ -186,14 +224,15 @@ public class App {
     }
 
     public static Map<String, Set<String>> validWordsPermutation(Stream<String> dictionary) {
-    return dictionary.collect(
-            Collectors.toMap(
-                    word -> {
-                        char[] characters = word.toCharArray();
-                        Arrays.sort(characters);
-                        return new String(characters);
-                    },
-                    Collections::singleton,
-                    (existingValue, newValue) -> Stream.concat(existingValue.stream(), newValue.stream()).collect(Collectors.toSet())));
+        return dictionary.collect(
+                Collectors.toMap(
+                        word -> {
+                            char[] characters = word.toCharArray();
+                            Arrays.sort(characters);
+                            return new String(characters);
+                        },
+                        Collections::singleton,
+                        (existingValue, newValue) -> Stream.concat(existingValue.stream(), newValue.stream())
+                                .collect(Collectors.toSet())));
     }
 }

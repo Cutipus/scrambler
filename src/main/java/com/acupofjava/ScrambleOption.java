@@ -1,31 +1,29 @@
 package com.acupofjava;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public record ScrambleOption(String characters, List<String> allWords) {
-    public String scramble(int i) throws ImpossiblePermutationException {
-        if (i < 0)
+public record ScrambleOption(String characters, Set<String> allWords) {
+    public String scramble(int seed) throws ImpossiblePermutationException {
+        if (seed < 0)
             throw new IllegalArgumentException("Index must be non-negative!");
-        List<String> permutations = generatePermutations();
-        List<String> nonRealWordPermutations = permutations.stream().filter(w -> !allWords.contains(w)).toList();
+        Set<String> permutations = generatePermutations();
+        Set<String> nonRealWordPermutations = permutations.stream().filter(w -> !allWords.contains(w))
+                .collect(Collectors.toSet());
         if (nonRealWordPermutations.size() == 0)
             throw new ImpossiblePermutationException("bad");
-        int correctedIndex = i % nonRealWordPermutations.size();
-        return nonRealWordPermutations.get(correctedIndex);
+        int correctedIndex = seed % nonRealWordPermutations.size();
+        return (String) nonRealWordPermutations.toArray()[correctedIndex];
     }
 
-    private List<String> generatePermutations() {
-        List<String> result = new ArrayList<>();
+    private Set<String> generatePermutations() {
+        Set<String> result = new HashSet<>();
         permute("", characters, result);
         return result;
     }
 
-    private void permute(String prefix, String str, List<String> result) {
+    private void permute(String prefix, String str, Set<String> result) {
         int n = str.length();
         if (n == 0) {
             result.add(prefix);
