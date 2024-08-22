@@ -1,9 +1,11 @@
 package com.acupofjava;
 
 import java.awt.*;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.swing.*;
 
@@ -13,7 +15,7 @@ public class App {
 
     public static void main(String[] args) {
         // Holds list of words to be unscrambled
-        List<String> words = List.of("hello", "world", "cat", "wow");
+        List<String> words = List.of("hello", "world", "cat", "wow", "live", "evil", "veil", "vile", "cat", "act", "no", "on", "bat", "tab");
         Iterator<String> wordIterator = words.iterator();
         AtomicReference<WordGameLogic> game = new AtomicReference<>(new WordGameLogic(wordIterator.next(), 3));
 
@@ -183,4 +185,15 @@ public class App {
         return userInput;
     }
 
+    public static Map<String, Set<String>> validWordsPermutation(Stream<String> dictionary) {
+    return dictionary.collect(
+            Collectors.toMap(
+                    word -> {
+                        char[] characters = word.toCharArray();
+                        Arrays.sort(characters);
+                        return new String(characters);
+                    },
+                    Collections::singleton,
+                    (existingValue, newValue) -> Stream.concat(existingValue.stream(), newValue.stream()).collect(Collectors.toSet())));
+    }
 }
