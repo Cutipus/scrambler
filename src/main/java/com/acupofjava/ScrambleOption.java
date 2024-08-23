@@ -1,11 +1,17 @@
 package com.acupofjava;
 
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public record ScrambleOption(String characters, Set<String> allWords) {
-    public String scramble(int seed) throws ImpossiblePermutationException {
+    public static ScrambleOption fromEntry(Entry<String, Set<String>> entry) {
+        return new ScrambleOption(entry.getKey(), entry.getValue());
+    }
+
+    public String scramble(int seed) {
+        // TODO: OPTIMIZE THIS! too slow after ~10 characters
         if (seed < 0)
             throw new IllegalArgumentException("Index must be non-negative!");
         Set<String> permutations = generatePermutations();

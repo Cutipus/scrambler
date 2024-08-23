@@ -1,6 +1,6 @@
 package com.acupofjava;
 
-public class ImpossiblePermutationException extends Exception {
+public class ImpossiblePermutationException extends RuntimeException {
     public ImpossiblePermutationException() {
     }
 

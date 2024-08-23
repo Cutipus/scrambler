@@ -12,33 +12,39 @@ import javax.swing.*;
 public class App {
 
     public static final Color BACKGROUND = new Color(25, 25, 61);
+    public static final List<String> words = List.of(
+            "hello", "world", "cat", "wow", "live", "evil", "veil", "vile",
+            "cat", "act", "no", "on", "bat", "tab");
 
     public static void main(String[] args) {
-        // Holds list of words to be unscrambled
-        List<String> words = List.of("hello", "world", "cat", "wow", "live", "evil", "veil", "vile", "cat", "act", "no",
-                "on", "bat", "tab");
-        Map<String, Set<String>> wordPermutations = validWordsPermutation(words.stream());
+        List<ScrambleOption> challengeList = validWordsPermutation(words.stream()).entrySet().stream()
+                .map(ScrambleOption::fromEntry)
+                .filter(scrambleOption -> {
+                    try {
+                        scrambleOption.scramble(0);
+                        return true;
+                    } catch (ImpossiblePermutationException e) {
+                        return false;
+                    }
+                })
+                .toList();
 
-        Iterator<String> challengeKeyList = wordPermutations.keySet().stream().iterator();
-        String nextChallengeKey = challengeKeyList.next();
-        var firstScramble = new ScrambleOption(nextChallengeKey, wordPermutations.get(nextChallengeKey));
-
-        AtomicReference<ScrambleOption> scrambles = new AtomicReference<>(firstScramble);
-        Hitpoints hp = new Hitpoints(3);
-
-        boolean goodWord = false;
-        String scrambled = null;
-        while (!goodWord) {
-            try {
-                scrambled = scrambles.get().scramble((int) (Math.random() * Integer.MAX_VALUE));
-                goodWord = true;
-            } catch (ImpossiblePermutationException e) {
-                String nextChallenge = challengeKeyList.next();
-                scrambles.set(
-                        new ScrambleOption(nextChallenge, wordPermutations.get(nextChallenge)));
-            }
+        for (ScrambleOption s : challengeList) {
+            System.out.println(s);
         }
-        JLabel scrambledWordLabel = createScrambledWordLabel(scrambled);
+
+        Iterator<ScrambleOption> challenges = challengeList.iterator();
+
+        ScrambleOption firstScramble;
+        if (challenges.hasNext())
+            firstScramble = challenges.next();
+        else {
+            throw new NoSuchElementException("No challenges found!");
+        }
+
+        AtomicReference<ScrambleOption> currentScrambleOption = new AtomicReference<>(firstScramble);
+        Hitpoints hp = new Hitpoints(3);
+        JLabel scrambledWordLabel = createScrambledWordLabel(firstScramble.scramble(0));
 
         // Text field to take user input
         TextField userInput = createUserInputTextField();
@@ -62,36 +68,20 @@ public class App {
         // Adds all the displays (number of hearts, scrambled word, text field for user
         // input and submit button) to mainscene
         mainScene.add(gameScene);
-        // mainScene.add(gameOverScreen);
         JFrame frame = createFrame(mainScene);
         frame.setVisible(true);
 
         // Checks if user entered the correct answer and responds accordingly
         submitButton.addActionListener(clickEvent -> {
             String userInputText = userInput.getText();
-            boolean match = scrambles.get().matches(userInputText); // TODO: match against scramble option
+            boolean match = currentScrambleOption.get().matches(userInputText);
 
             if (match) {
                 // VICTORY
-                if (challengeKeyList.hasNext()) {
-                    String nextChallengeKey_ = challengeKeyList.next();
-                    scrambles.set(new ScrambleOption(nextChallengeKey_, wordPermutations.get(nextChallengeKey_)));
+                if (challenges.hasNext()) {
+                    currentScrambleOption.set(challenges.next());
                     System.out.println("WIN");
-
-                    boolean goodWord_ = false;
-                    String scrambled_ = null;
-                    while (!goodWord_) {
-                        try {
-                            scrambled_ = scrambles.get().scramble((int) (Math.random() * Integer.MAX_VALUE));
-                            goodWord_ = true;
-                        } catch (ImpossiblePermutationException e) {
-                            String nextChallenge = challengeKeyList.next();
-                            scrambles.set(
-                                    new ScrambleOption(nextChallenge,
-                                            wordPermutations.get(nextChallenge)));
-                        }
-                    }
-                    scrambledWordLabel.setText(scrambled_);
+                    scrambledWordLabel.setText(currentScrambleOption.get().scramble(0));
                 } else {
                     submitButton.setEnabled(false);
                     mainScene.remove(gameScene);
