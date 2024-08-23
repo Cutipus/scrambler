@@ -58,7 +58,7 @@ public class App {
         Box inputArea = createInputArea(userInput, submitButton);
         // Displays number of hearts, scrambled word, text field for user input and
         // submit / quit button
-        Box gameScene = createOuterBox(healthDisplay, wordLabel, inputArea, quitButton);
+        Box gameScene = createGameScreen(healthDisplay, wordLabel, inputArea, quitButton);
         JLabel gameOverText = new JLabel("Game Over");
         gameOverText.setForeground(Color.RED);
         gameOverText.setFont(new Font("Arial", Font.BOLD, 40));
@@ -155,21 +155,6 @@ public class App {
         return topBox;
     }
 
-    private static Box createOuterBox(JComponent healthBox, JComponent wordBox, JComponent inputBox,
-            JComponent quitButton) {
-        Box outerBox = Box.createVerticalBox();
-        outerBox.setOpaque(true);
-        outerBox.setBackground(BACKGROUND);
-
-        outerBox.add(Box.createVerticalStrut(100));
-        outerBox.add(healthBox);
-        outerBox.add(wordBox);
-        outerBox.add(inputBox);
-        outerBox.add(quitButton);
-        outerBox.add(Box.createVerticalStrut(100));
-        return outerBox;
-    }
-
     private static JLabel createScrambledWordLabel(String text) {
         JLabel scrambledWordLabel = new JLabel(text);
         scrambledWordLabel.setFont(new Font("Arial", Font.BOLD, 40));
@@ -182,6 +167,32 @@ public class App {
         button.setFocusable(false);
         button.setFont(new Font("Arial", Font.BOLD, 15));
         return button;
+    }
+
+    private static Box createSceneTemplate(JComponent collectionOfComponents, Color backgroundColor) {
+        Box innerBox = Box.createVerticalBox();
+        innerBox.add(Box.createGlue());
+        innerBox.add(collectionOfComponents);
+        innerBox.add(Box.createGlue());
+        Box outerBox = Box.createHorizontalBox();
+        outerBox.add(Box.createGlue());
+        outerBox.add(innerBox);
+        outerBox.add(Box.createGlue());
+        outerBox.setOpaque(true);
+        outerBox.setBackground(backgroundColor);
+        return outerBox;
+    }
+
+    private static Box createGameScreen(JComponent healthBox, JComponent wordBox, JComponent inputBox,
+                                        JComponent quitButton) {
+        Box outerBox = Box.createVerticalBox();
+        outerBox.add(Box.createVerticalStrut(100));
+        outerBox.add(healthBox);
+        outerBox.add(wordBox);
+        outerBox.add(inputBox);
+        outerBox.add(quitButton);
+        outerBox.add(Box.createVerticalStrut(100));
+        return createSceneTemplate(outerBox, BACKGROUND);
     }
 
     private static Box createGameOverScreen(JLabel gameOverText, JButton quitButton) {
@@ -198,13 +209,7 @@ public class App {
         inner.add(gameOverBox);
         inner.add(quitButtonBox);
         inner.add(Box.createGlue());
-        Box outer = Box.createHorizontalBox();
-        outer.setOpaque(true);
-        outer.setBackground(BACKGROUND);
-        outer.add(Box.createGlue());
-        outer.add(inner);
-        outer.add(Box.createGlue());
-        return outer;
+        return createSceneTemplate(inner, BACKGROUND);
     }
 
     private static TextField createUserInputTextField() {

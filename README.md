@@ -11,5 +11,6 @@
 - [ ] Make a GAME OVER screen better looking
 - [ ] Get a logo for the app
 - [ ] Get a logo for the health display
+- [ ] Add a restart button
 - [ ] Display game statistics in GAME OVER scene
 - [ ] Add difficulty levels
