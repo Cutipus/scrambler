@@ -18,10 +18,15 @@ import javax.swing.*;
 
 public class App {
 
-    public static final Color BACKGROUND = new Color(25, 25, 61);
+    public static final Color MAIN_SCREEN_BG_COLOR = new Color(25, 25, 61);
+    public static final Color GAME_OVER_BG_COLOR = new Color(131, 14, 14);
+    public static final Color VICTORY_LABEL_COLOR = new Color(154, 201, 79);
+    public static final Color GAME_OVER_LABEL_COLOR = Color.RED;
+    public static final Color VICTORY_SCREEN_BG_COLOR = Color.BLUE;
     public static final List<String> words = List.of(
             "hello", "world", "cat", "wow", "live", "evil", "veil", "vile",
             "cat", "act", "no", "on", "bat", "tab");
+
 
     public static void main(String[] args) {
         Iterator<ScrambleOption> challenges = getChallenges(words);
@@ -37,19 +42,21 @@ public class App {
         Hitpoints hp = new Hitpoints(3);
 
         JButton quitButton = createButton("Quit");
+        JButton submitButton = createButton("Submit");
+        Box healthDisplay = createHealthDisplay(hp.getHP());
 
-        Box gameScreen = createScreen(BACKGROUND, stackVertically(
-                createHealthDisplay(hp.getHP()),
-                createLabel(firstScramble.scramble(0), new Color(154, 201, 79)),
-                stackHorizontally(createTextField(""), createButton("Submit")),
+        Box gameScreen = createScreen(MAIN_SCREEN_BG_COLOR, stackVertically(
+                healthDisplay,
+                createLabel(firstScramble.scramble(0), VICTORY_LABEL_COLOR),
+                stackHorizontally(createTextField(""), submitButton),
                 quitButton));
 
-        Box gameOverScreen = createScreen(BACKGROUND, stackVertically(
-                createLabel("Game Over", Color.RED),
+        Box gameOverScreen = createScreen(GAME_OVER_BG_COLOR, stackVertically(
+                createLabel("Game Over", GAME_OVER_LABEL_COLOR),
                 quitButton));
 
-        Box victoryScreen = createScreen(Color.BLUE, stackVertically(
-                createLabel("Victory", Color.GREEN),
+        Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, stackVertically(
+                createLabel("Victory", VICTORY_LABEL_COLOR),
                 createButton("Restart"),
                 quitButton));
 
@@ -59,8 +66,10 @@ public class App {
         frame.setVisible(true);
 
         // Checks if user entered the correct answer and responds accordingly
-        createButton("Submit").addActionListener(clickEvent -> {
+        submitButton.addActionListener(clickEvent -> {
+            System.out.println("Clicked");
             String userInputText = createTextField("").getText();
+            System.out.println(userInputText);
             boolean match = currentScrambleOption.get().matches(userInputText);
 
             if (match) {
@@ -69,11 +78,11 @@ public class App {
                     // User still has words left to solve
                     currentScrambleOption.set(challenges.next());
                     System.out.println("WIN");
-                    createLabel(firstScramble.scramble(0), new Color(154, 201, 79))
+                    createLabel(firstScramble.scramble(0), VICTORY_LABEL_COLOR)
                             .setText(currentScrambleOption.get().scramble(0));
                 } else {
                     // If user beats the game
-                    createButton("Submit").setEnabled(false);
+                    submitButton.setEnabled(false);
                     mainScene.remove(gameScreen);
                     mainScene.add(victoryScreen);
                     frame.pack();
@@ -83,12 +92,12 @@ public class App {
             } else {
                 switch (hp.hit()) {
                     case ALIVE -> {
-                        createHealthDisplay(hp.getHP()).remove(0);
-                        createHealthDisplay(hp.getHP()).repaint();
+                        healthDisplay.remove(0);
+                        healthDisplay.repaint();
                     }
                     case DEAD -> {
                         System.out.println("You've lost the game");
-                        createButton("Submit").setEnabled(false);
+                        submitButton.setEnabled(false);
                         mainScene.remove(gameScreen);
                         mainScene.add(gameOverScreen);
                         frame.pack();
@@ -120,8 +129,8 @@ public class App {
     }
 
     private static JComponent createHeart() {
-        var heart = new JLabel("❤️");
-        heart.setForeground(Color.RED);
+        var heart = new JLabel("❤");
+        heart.setForeground(GAME_OVER_LABEL_COLOR);
         return heart;
     }
 
