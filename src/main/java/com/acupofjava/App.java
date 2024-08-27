@@ -46,28 +46,21 @@ public class App {
         Hitpoints hp = new Hitpoints(3);
         JLabel scrambledWordLabel = createScrambledWordLabel(firstScramble.scramble(0));
 
-        // Text field to take user input
         TextField userInput = createUserInputTextField();
         JButton submitButton = createButton("Submit");
         JButton quitButton = createButton("Quit");
-        // Displays the number of hearts
         Box healthDisplay = createHealthDisplay(3);
-        // Displays scrambled word
         Box wordLabel = createWordLabel(scrambledWordLabel);
-        // Displays text field for user input and submit button
         Box inputArea = createInputArea(userInput, submitButton);
-        // Displays number of hearts, scrambled word, text field for user input and
-        // submit / quit button
         Box gameScene = createGameScreen(healthDisplay, wordLabel, inputArea, quitButton);
-        JLabel gameOverText = new JLabel("Game Over");
-        gameOverText.setForeground(Color.RED);
-        gameOverText.setFont(new Font("Arial", Font.BOLD, 40));
+        JLabel gameOverText = createLabel("Game Over", Color.RED);
+        JLabel victoryText = createLabel("Victory", Color.GREEN);
         Box gameOverScreen = createGameOverScreen(gameOverText, quitButton);
+        JButton restartButton = createButton("Restart");
+        Box victoryScreen = createVictoryScreen(victoryText, restartButton, quitButton);
 
         Box mainScene = Box.createHorizontalBox();
-        // Adds all the displays (number of hearts, scrambled word, text field for user
-        // input and submit button) to mainscene
-        mainScene.add(gameScene);
+        mainScene.add(victoryScreen);
         JFrame frame = createFrame(mainScene);
         frame.setVisible(true);
 
@@ -79,13 +72,15 @@ public class App {
             if (match) {
                 // VICTORY
                 if (challenges.hasNext()) {
+                    // User still has words left to solve
                     currentScrambleOption.set(challenges.next());
                     System.out.println("WIN");
                     scrambledWordLabel.setText(currentScrambleOption.get().scramble(0));
                 } else {
+                    // If user beats the game
                     submitButton.setEnabled(false);
                     mainScene.remove(gameScene);
-                    mainScene.add(gameOverScreen);
+                    mainScene.add(victoryScreen);
                     frame.pack();
                     mainScene.repaint();
                 }
@@ -111,6 +106,13 @@ public class App {
 
         // Quits game
         quitButton.addActionListener(e -> System.exit(0));
+    }
+
+    private static JLabel createLabel(String text, Color textColor) {
+        JLabel gameOverText = new JLabel(text);
+        gameOverText.setForeground(textColor);
+        gameOverText.setFont(new Font("Arial", Font.BOLD, 40));
+        return gameOverText;
     }
 
     // Adds specified number of hearts as health display
@@ -186,30 +188,38 @@ public class App {
     private static Box createGameScreen(JComponent healthBox, JComponent wordBox, JComponent inputBox,
                                         JComponent quitButton) {
         Box outerBox = Box.createVerticalBox();
-        outerBox.add(Box.createVerticalStrut(100));
         outerBox.add(healthBox);
         outerBox.add(wordBox);
         outerBox.add(inputBox);
         outerBox.add(quitButton);
-        outerBox.add(Box.createVerticalStrut(100));
         return createSceneTemplate(outerBox, BACKGROUND);
     }
 
+    private static Box createVictoryScreen(JLabel victoryText, JButton restartButton, JButton quitButton) {
+        Box victoryScreen = Box.createVerticalBox();
+        victoryScreen.add(centerHorizontally(victoryText));
+        victoryScreen.add(centerHorizontally(restartButton));
+        victoryScreen.add(centerHorizontally(quitButton));
+        return createSceneTemplate(victoryScreen, Color.BLUE);
+    }
+
     private static Box createGameOverScreen(JLabel gameOverText, JButton quitButton) {
-        Box gameOverBox = Box.createHorizontalBox();
-        gameOverBox.add(Box.createGlue());
-        gameOverBox.add(gameOverText);
-        gameOverBox.add(Box.createGlue());
-        Box quitButtonBox = Box.createHorizontalBox();
-        quitButtonBox.add(Box.createGlue());
-        quitButtonBox.add(quitButton);
-        quitButtonBox.add(Box.createGlue());
+        Box gameOverBox = centerHorizontally(gameOverText);
+        Box quitButtonBox = centerHorizontally(quitButton);
         Box inner = Box.createVerticalBox();
         inner.add(Box.createGlue());
         inner.add(gameOverBox);
         inner.add(quitButtonBox);
         inner.add(Box.createGlue());
         return createSceneTemplate(inner, BACKGROUND);
+    }
+
+    private static Box centerHorizontally(JComponent component) {
+        Box gameOverBox = Box.createHorizontalBox();
+        gameOverBox.add(Box.createGlue());
+        gameOverBox.add(component);
+        gameOverBox.add(Box.createGlue());
+        return gameOverBox;
     }
 
     private static TextField createUserInputTextField() {
