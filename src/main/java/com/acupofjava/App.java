@@ -41,7 +41,6 @@ public class App {
         AtomicReference<ScrambleOption> currentScrambleOption = new AtomicReference<>(firstScramble);
         Hitpoints hp = new Hitpoints(3);
 
-        JButton quitButton = createButton("Quit");
         JButton submitButton = createButton("Submit");
         Box healthDisplay = createHealthDisplay(hp.getHP());
 
@@ -49,16 +48,16 @@ public class App {
                 healthDisplay,
                 createLabel(firstScramble.scramble(0), VICTORY_LABEL_COLOR),
                 stackHorizontally(createTextField(""), submitButton),
-                quitButton));
+                createQuitButton()));
 
         Box gameOverScreen = createScreen(GAME_OVER_BG_COLOR, stackVertically(
                 createLabel("Game Over", GAME_OVER_LABEL_COLOR),
-                quitButton));
+                createQuitButton()));
 
         Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, stackVertically(
                 createLabel("Victory", VICTORY_LABEL_COLOR),
                 createButton("Restart"),
-                quitButton));
+                createQuitButton()));
 
         Box mainScene = Box.createHorizontalBox();
         mainScene.add(gameScreen);
@@ -108,8 +107,14 @@ public class App {
             }
         });
 
-        // Quits game
-        quitButton.addActionListener(e -> System.exit(0));
+
+
+    }
+
+    private static JButton createQuitButton() {
+        JButton quitButton2 = createButton("Quit");
+        quitButton2.addActionListener(e -> System.exit(0));
+        return quitButton2;
     }
 
     private static JFrame createFrame(Box mainScene) {
