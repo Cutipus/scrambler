@@ -7,10 +7,10 @@
 - [x] Make a GAME OVER screen
 - [X] Palindromes should still come out scrambled
 - [X] Display new challenge if you win
-- [ ] Make a VICTORY screen
+- [x] Make a VICTORY screen
 - [ ] Make a GAME OVER screen better looking
 - [ ] Get a logo for the app
 - [ ] Get a logo for the health display
-- [ ] Add a restart button
+- [x] Add a restart button
 - [ ] Display game statistics in GAME OVER scene
 - [ ] Add difficulty levels

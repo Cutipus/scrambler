@@ -3,6 +3,7 @@ package com.acupofjava;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -41,33 +42,64 @@ public class App {
         AtomicReference<ScrambleOption> currentScrambleOption = new AtomicReference<>(firstScramble);
         Hitpoints hp = new Hitpoints(3);
 
-        JButton submitButton = createButton("Submit");
         Box healthDisplay = createHealthDisplay(hp.getHP());
-
+        JLabel challengeWordLabel = createLabel(firstScramble.scramble(0), VICTORY_LABEL_COLOR);
+        JTextField userInput = createTextField("");
+        JButton submitButton = createButton("Submit");
         Box gameScreen = createScreen(MAIN_SCREEN_BG_COLOR, stackVertically(
                 healthDisplay,
-                createLabel(firstScramble.scramble(0), VICTORY_LABEL_COLOR),
-                stackHorizontally(createTextField(""), submitButton),
+                challengeWordLabel,
+                stackHorizontally(userInput, submitButton),
                 createQuitButton()));
 
         Box gameOverScreen = createScreen(GAME_OVER_BG_COLOR, stackVertically(
                 createLabel("Game Over", GAME_OVER_LABEL_COLOR),
                 createQuitButton()));
 
+        JButton restartButton = createButton("Restart");
         Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, stackVertically(
                 createLabel("Victory", VICTORY_LABEL_COLOR),
-                createButton("Restart"),
+                restartButton,
                 createQuitButton()));
 
-        Box mainScene = Box.createHorizontalBox();
-        mainScene.add(gameScreen);
-        JFrame frame = createFrame(mainScene);
+        Box screenSwitcher = Box.createHorizontalBox();
+        screenSwitcher.add(gameScreen);
+        JFrame frame = createFrame(screenSwitcher);
         frame.setVisible(true);
 
+        restartButton.addActionListener(clickEvent -> {
+            // restart iterator
+            // reset hearts
+            // change scene
+            screenSwitcher.remove(victoryScreen);
+            screenSwitcher.add(gameScreen);
+            frame.pack();
+            screenSwitcher.repaint();
+            // reset text
+        });
+
         // Checks if user entered the correct answer and responds accordingly
-        submitButton.addActionListener(clickEvent -> {
+        submitButton.addActionListener((actionEvent) -> {
+            String userGuess = userInput.getText();
+            // Submit button
+            // var something = logic.play(userGuess);
+            // switch (something) {
+            // case CONTINUE(new challenge) -> need new challenge, hearts remain same
+            // case CONTINUE_BUT_WRONG(new hp) -> same challenge, hearts decrement
+            // case BEAT_GAME(statistics) ->  Swap to victory screen, display stats
+            // case FAILED_GAME(statistics) -> Swap to game over screen, display stats
+            //game.statistics , game.hp
+        });
+    }
+
+    public static void action() {
+        //userTries(String input)
+    }
+
+    private static ActionListener onUserClick(Iterator<ScrambleOption> challenges, AtomicReference<ScrambleOption> currentScrambleOption, Hitpoints hp, Box healthDisplay, JLabel challengeWordLabel, JTextField userInput, JButton submitButton, Box gameScreen, Box gameOverScreen, Box victoryScreen, Box screenSwitcher, JFrame frame) {
+        return clickEvent -> {
             System.out.println("Clicked");
-            String userInputText = createTextField("").getText();
+            String userInputText = userInput.getText();
             System.out.println(userInputText);
             boolean match = currentScrambleOption.get().matches(userInputText);
 
@@ -77,15 +109,14 @@ public class App {
                     // User still has words left to solve
                     currentScrambleOption.set(challenges.next());
                     System.out.println("WIN");
-                    createLabel(firstScramble.scramble(0), VICTORY_LABEL_COLOR)
+                    challengeWordLabel
                             .setText(currentScrambleOption.get().scramble(0));
                 } else {
                     // If user beats the game
-                    submitButton.setEnabled(false);
-                    mainScene.remove(gameScreen);
-                    mainScene.add(victoryScreen);
+                    screenSwitcher.remove(gameScreen);
+                    screenSwitcher.add(victoryScreen);
                     frame.pack();
-                    mainScene.repaint();
+                    screenSwitcher.repaint();
                 }
 
             } else {
@@ -97,24 +128,21 @@ public class App {
                     case DEAD -> {
                         System.out.println("You've lost the game");
                         submitButton.setEnabled(false);
-                        mainScene.remove(gameScreen);
-                        mainScene.add(gameOverScreen);
+                        screenSwitcher.remove(gameScreen);
+                        screenSwitcher.add(gameOverScreen);
                         frame.pack();
-                        mainScene.repaint();
+                        screenSwitcher.repaint();
 
                     }
                 }
             }
-        });
-
-
-
+        };
     }
 
     private static JButton createQuitButton() {
-        JButton quitButton2 = createButton("Quit");
-        quitButton2.addActionListener(e -> System.exit(0));
-        return quitButton2;
+        JButton quitButton = createButton("Quit");
+        quitButton.addActionListener(e -> System.exit(0));
+        return quitButton;
     }
 
     private static JFrame createFrame(Box mainScene) {
