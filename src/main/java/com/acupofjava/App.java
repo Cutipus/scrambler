@@ -1,11 +1,12 @@
 package com.acupofjava;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.plaf.basic.BasicBorders;
+import javax.swing.plaf.metal.MetalBorders;
 
 public class App {
 
@@ -42,7 +43,7 @@ public class App {
                 createQuitButton()));
 
         Box screenSwitcher = Box.createHorizontalBox();
-        screenSwitcher.add(gameScreen);
+        screenSwitcher.add(gameOverScreen);
         JFrame frame = createFrame(screenSwitcher);
         frame.setVisible(true);
 
@@ -91,8 +92,15 @@ public class App {
     private static JButton createQuitButton() {
         JButton quitButton = createButton("Quit");
         // looking good
-        quitButton.setBackground(GAME_OVER_BG_COLOR);
-        quitButton.setForeground(GAME_OVER_LABEL_COLOR);
+        quitButton.setBackground(Color.BLACK);
+        quitButton.setForeground(Color.BLUE);
+//        quitButton.setBorder(new LineBorder(Color.BLACK));
+//        quitButton.setBorder(new EmptyBorder(5, 15, 5, 15));
+        // gives good customizability to border width and color
+        Border obj = new BasicBorders.ButtonBorder(Color.CYAN, Color.CYAN, Color.BLUE, Color.BLUE);
+        Border outsideBorder = new StrokeBorder(new BasicStroke(), Color.CYAN);
+        Border compound = new CompoundBorder(obj, new EmptyBorder(5, 15, 5, 15));
+        quitButton.setBorder(compound);
         quitButton.addActionListener(e -> System.exit(0));
         return quitButton;
     }
