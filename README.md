@@ -8,6 +8,7 @@
 - [X] Palindromes should still come out scrambled
 - [X] Display new challenge if you win
 - [x] Make a VICTORY screen
+- [ ] Make restart button reset game
 - [ ] Make a GAME OVER screen better looking
 - [ ] Get a logo for the app
 - [ ] Get a logo for the health display
