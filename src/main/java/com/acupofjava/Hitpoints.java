@@ -1,9 +1,6 @@
 package com.acupofjava;
 
 public class Hitpoints {
-    enum State {
-        ALIVE, DEAD
-    }
 
     private int hp;
 
@@ -18,14 +15,10 @@ public class Hitpoints {
         return hp;
     }
 
-    public State hit() {
+    public boolean hit() {
         if (hp == 0)
             throw new IllegalStateException("Can't try if you don't have HP left!");
 
-        if (hp-- == 1)
-            return State.DEAD;
-        else
-            return State.ALIVE;
-
+        return hp-- != 1;
     }
 }

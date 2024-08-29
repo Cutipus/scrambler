@@ -3,7 +3,6 @@ package com.acupofjava;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -43,7 +42,7 @@ public class App {
         Hitpoints hp = new Hitpoints(3);
 
         Box healthDisplay = createHealthDisplay(hp.getHP());
-        JLabel challengeWordLabel = createLabel(firstScramble.scramble(0), VICTORY_LABEL_COLOR);
+        JLabel challengeWordLabel = createLabel(VICTORY_LABEL_COLOR, firstScramble.scramble(0));
         JTextField userInput = createTextField("");
         JButton submitButton = createButton("Submit");
         Box gameScreen = createScreen(MAIN_SCREEN_BG_COLOR, stackVertically(
@@ -53,12 +52,12 @@ public class App {
                 createQuitButton()));
 
         Box gameOverScreen = createScreen(GAME_OVER_BG_COLOR, stackVertically(
-                createLabel("Game Over", GAME_OVER_LABEL_COLOR),
+                createLabel(GAME_OVER_LABEL_COLOR, "Game Over"),
                 createQuitButton()));
 
         JButton restartButton = createButton("Restart");
         Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, stackVertically(
-                createLabel("Victory", VICTORY_LABEL_COLOR),
+                createLabel(VICTORY_LABEL_COLOR, "Victory"),
                 restartButton,
                 createQuitButton()));
 
@@ -79,64 +78,51 @@ public class App {
         });
 
         // Checks if user entered the correct answer and responds accordingly
-        submitButton.addActionListener((actionEvent) -> {
+        submitButton.addActionListener(e -> {
             String userGuess = userInput.getText();
-            // Submit button
-            // var something = logic.play(userGuess);
-            // switch (something) {
-            // case CONTINUE(new challenge) -> need new challenge, hearts remain same
-            // case CONTINUE_BUT_WRONG(new hp) -> same challenge, hearts decrement
-            // case BEAT_GAME(statistics) ->  Swap to victory screen, display stats
-            // case FAILED_GAME(statistics) -> Swap to game over screen, display stats
-            //game.statistics , game.hp
-        });
-    }
-
-    public static void action() {
-        //userTries(String input)
-    }
-
-    private static ActionListener onUserClick(Iterator<ScrambleOption> challenges, AtomicReference<ScrambleOption> currentScrambleOption, Hitpoints hp, Box healthDisplay, JLabel challengeWordLabel, JTextField userInput, JButton submitButton, Box gameScreen, Box gameOverScreen, Box victoryScreen, Box screenSwitcher, JFrame frame) {
-        return clickEvent -> {
-            System.out.println("Clicked");
-            String userInputText = userInput.getText();
-            System.out.println(userInputText);
-            boolean match = currentScrambleOption.get().matches(userInputText);
-
-            if (match) {
-                // VICTORY
-                if (challenges.hasNext()) {
-                    // User still has words left to solve
-                    currentScrambleOption.set(challenges.next());
-                    System.out.println("WIN");
-                    challengeWordLabel
-                            .setText(currentScrambleOption.get().scramble(0));
-                } else {
-                    // If user beats the game
+            PlayResult playResult = play(hp,currentScrambleOption,challenges,userGuess);
+            switch (playResult) {
+                case PlayResult.Defeat() -> {
+                    System.out.println("You've lost the game");
+                    screenSwitcher.remove(gameScreen);
+                    screenSwitcher.add(gameOverScreen);
+                    frame.pack();
+                    screenSwitcher.repaint();
+                }
+                case PlayResult.Victory() -> {
                     screenSwitcher.remove(gameScreen);
                     screenSwitcher.add(victoryScreen);
                     frame.pack();
                     screenSwitcher.repaint();
                 }
-
-            } else {
-                switch (hp.hit()) {
-                    case ALIVE -> {
+                case PlayResult.Wrong(int hpLeft) -> {
+                    for (int i = 0; i < healthDisplay.getComponents().length - hpLeft; i++) {
                         healthDisplay.remove(0);
-                        healthDisplay.repaint();
                     }
-                    case DEAD -> {
-                        System.out.println("You've lost the game");
-                        submitButton.setEnabled(false);
-                        screenSwitcher.remove(gameScreen);
-                        screenSwitcher.add(gameOverScreen);
-                        frame.pack();
-                        screenSwitcher.repaint();
-
-                    }
+                    healthDisplay.repaint();
+                }
+                case PlayResult.Right(String nextWord) -> {
+                    challengeWordLabel.setText(nextWord);
                 }
             }
-        };
+        });
+    }
+
+    public static PlayResult play(Hitpoints hp, AtomicReference<ScrambleOption> currentWord, Iterator<ScrambleOption> challenges, String userGuess) {
+        if (currentWord.get().matches(userGuess)) {
+            if (challenges.hasNext()) {
+                currentWord.set(challenges.next());
+                return new PlayResult.Right(currentWord.get().scramble((int) (Math.random() * Integer.MAX_VALUE)));
+            } else {
+                return new PlayResult.Victory();
+            }
+        } else {
+            if (hp.hit()) {
+                return new PlayResult.Wrong(hp.getHP());
+            } else {
+                return new PlayResult.Defeat();
+            }
+        }
     }
 
     private static JButton createQuitButton() {
@@ -167,7 +153,7 @@ public class App {
         return heart;
     }
 
-    private static JLabel createLabel(String text, Color textColor) {
+    private static JLabel createLabel(Color textColor, String text) {
         JLabel gameOverText = new JLabel(text);
         gameOverText.setForeground(textColor);
         gameOverText.setFont(new Font("Arial", Font.BOLD, 40));
