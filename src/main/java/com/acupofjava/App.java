@@ -90,6 +90,9 @@ public class App {
 
     private static JButton createQuitButton() {
         JButton quitButton = createButton("Quit");
+        // looking good
+        quitButton.setBackground(GAME_OVER_BG_COLOR);
+        quitButton.setForeground(GAME_OVER_LABEL_COLOR);
         quitButton.addActionListener(e -> System.exit(0));
         return quitButton;
     }
