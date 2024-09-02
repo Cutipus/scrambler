@@ -7,9 +7,10 @@ import javax.swing.*;
 
 public class App {
 
-    public static final Color MAIN_SCREEN_BG_COLOR = new Color(25, 25, 61);
+    public static final Color DARKER_BLUE = Color.decode("#222B35");
+    public static final Color DARK_BLUE = Color.decode("#303D4A");
+    public static final Color STEEL_BLUE = Color.decode("#8497B0");
     public static final Color GAME_OVER_BG_COLOR = new Color(131, 14, 14);
-    public static final Color VICTORY_LABEL_COLOR = new Color(154, 201, 79);
     public static final Color GAME_OVER_LABEL_COLOR = Color.RED;
     public static final Color VICTORY_SCREEN_BG_COLOR = Color.BLUE;
     public static final List<String> words = List.of(
@@ -20,27 +21,27 @@ public class App {
         Game game = new Game(words, new Hitpoints(10));
 
         Box healthDisplay = createHealthDisplay(game.getHP());
-        JLabel challengeWordLabel = createLabel(VICTORY_LABEL_COLOR, game.generateScramble());
+        JLabel challengeWordLabel = createLabel(STEEL_BLUE, game.generateScramble());
         JTextField userInput = createTextField("");
         JButton submitButton = createButton("Submit");
-        Box gameScreen = createScreen(MAIN_SCREEN_BG_COLOR, stackVertically(
+        Box gameScreen = createScreen(Color.CYAN, Color.MAGENTA, stackVertically(
                 healthDisplay,
                 challengeWordLabel,
                 stackHorizontally(userInput, submitButton),
                 createQuitButton()));
 
-        Box gameOverScreen = createScreen(GAME_OVER_BG_COLOR, stackVertically(
+        Box gameOverScreen = createScreen(GAME_OVER_BG_COLOR, Color.RED, stackVertically(
                 createLabel(GAME_OVER_LABEL_COLOR, "Game Over"),
                 createQuitButton()));
 
         JButton restartButton = createButton("Restart");
-        Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, stackVertically(
-                createLabel(VICTORY_LABEL_COLOR, "Victory"),
+        Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, Color.RED, stackVertically(
+                createLabel(STEEL_BLUE, "Victory"),
                 restartButton,
                 createQuitButton()));
 
         Box screenSwitcher = Box.createHorizontalBox();
-        screenSwitcher.add(gameOverScreen);
+        screenSwitcher.add(gameScreen);
         JFrame frame = createFrame(screenSwitcher);
         frame.setVisible(true);
 
@@ -88,10 +89,12 @@ public class App {
 
     private static JButton createQuitButton() {
         JButton quitButton = createButton("Quit");
-        quitButton.setBackground(Color.BLACK);
-        quitButton.setForeground(Color.BLUE);
+        quitButton.setBackground(Color.decode("#06c4c4"));
+        quitButton.setForeground(Color.MAGENTA);
         quitButton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.RED),
+                BorderFactory.createBevelBorder(0,
+                        STEEL_BLUE,STEEL_BLUE,
+                        Color.MAGENTA, Color.MAGENTA),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         quitButton.addActionListener(e -> System.exit(0));
         return quitButton;
@@ -102,6 +105,7 @@ public class App {
         frame.add(mainScene);
         frame.setMinimumSize(new Dimension(300, 500));
         frame.setResizable(false);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         return frame;
     }
@@ -139,11 +143,11 @@ public class App {
         return button;
     }
 
-    private static Box createScreen(Color backgroundColor, JComponent collectionOfComponents) {
+    private static Box createScreen(Color topColor, Color bottomColor, JComponent collectionOfComponents) {
         Box screen = centerHorizontally(centerVertically(collectionOfComponents));
-        screen.setOpaque(true);
-        screen.setBackground(backgroundColor);
-        return screen;
+        GradiantPanel backgroundScreen = new GradiantPanel(topColor, bottomColor);
+        backgroundScreen.add(screen);
+        return backgroundScreen;
     }
 
     private static Box stackHorizontally(JComponent... components) {
