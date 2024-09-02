@@ -4,8 +4,6 @@ import java.awt.*;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.plaf.basic.BasicBorders;
 
 public class App {
 
@@ -90,16 +88,11 @@ public class App {
 
     private static JButton createQuitButton() {
         JButton quitButton = createButton("Quit");
-        // looking good
         quitButton.setBackground(Color.BLACK);
         quitButton.setForeground(Color.BLUE);
-        // quitButton.setBorder(new LineBorder(Color.BLACK));
-        // quitButton.setBorder(new EmptyBorder(5, 15, 5, 15));
-        // gives good customizability to border width and color
-        Border obj = new BasicBorders.ButtonBorder(Color.CYAN, Color.CYAN, Color.BLUE, Color.BLUE);
-        Border outsideBorder = new StrokeBorder(new BasicStroke(), Color.CYAN);
-        Border compound = new CompoundBorder(obj, new EmptyBorder(5, 15, 5, 15));
-        quitButton.setBorder(compound);
+        quitButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.RED),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         quitButton.addActionListener(e -> System.exit(0));
         return quitButton;
     }
