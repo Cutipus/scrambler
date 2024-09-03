@@ -3,26 +3,29 @@ package com.acupofjava;
 import javax.swing.*;
 import java.awt.*;
 
-public class GradiantPanel extends Box {
+class GradiantButton extends JButton {
 
     private Color topColor;
     private Color bottomColor;
 
-    public GradiantPanel(Color topColor, Color bottomColor) {
-        super(BoxLayout.X_AXIS);
+    GradiantButton(Color topColor, Color bottomColor, String text) {
+        super(text);
+        setContentAreaFilled(false);
         this.topColor = topColor;
         this.bottomColor = bottomColor;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
         final Graphics2D g2d = (Graphics2D) g.create();
         g2d.setPaint(new GradientPaint(
-                new Point(getWidth() /2, 0),
+                new Point(0, 0),
                 topColor,
-                new Point(getWidth() /2, getHeight()),
+                new Point(0, getHeight()),
                 bottomColor));
         g2d.fillRect(0, 0, getWidth(), getHeight());
+        g2d.dispose();
+
+        super.paintComponent(g);
     }
 }
