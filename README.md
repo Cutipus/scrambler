@@ -11,6 +11,11 @@
 - [x] Add a restart button
 - [x] Gradiant button background color
 - [x] Get a logo for the health display
+- [ ] Gradiant button background color
+- [ ] Different color for button when armed
+- [ ] Rework victory screen looks
+- [ ] Rework defeat screen looks
+- [ ] Rework Game screen looks
 - [ ] Make restart button reset game
 - [ ] Make a GAME OVER screen better looking
 - [ ] Get a logo for the app
