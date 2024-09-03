@@ -1,12 +1,16 @@
 package com.acupofjava;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.*;
 
 public class App {
 
+    private static final String HEARTSHAPE_PATH = "heartshape-32x32.png";
+    private static final int STARTING_HP = 3;
     public static final Color DARKER_BLUE = Color.decode("#222B35");
     public static final Color DARK_BLUE = Color.decode("#303D4A");
     public static final Color STEEL_BLUE = Color.decode("#8497B0");
@@ -18,7 +22,7 @@ public class App {
             "cat", "act", "no", "on", "bat", "tab");
 
     public static void main(String[] args) {
-        Game game = new Game(words, new Hitpoints(10));
+        Game game = new Game(words, new Hitpoints(STARTING_HP));
 
         Box healthDisplay = createHealthDisplay(game.getHP());
         JLabel challengeWordLabel = createLabel(STEEL_BLUE, game.generateScramble());
@@ -93,7 +97,7 @@ public class App {
         quitButton.setForeground(Color.MAGENTA);
         quitButton.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createBevelBorder(0,
-                        STEEL_BLUE,STEEL_BLUE,
+                        STEEL_BLUE, STEEL_BLUE,
                         Color.MAGENTA, Color.MAGENTA),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         quitButton.addActionListener(e -> System.exit(0));
@@ -118,7 +122,10 @@ public class App {
     }
 
     private static JComponent createHeart() {
-        var heart = new JLabel("❤");
+        URL resource;
+        if (Objects.isNull(resource = App.class.getResource(HEARTSHAPE_PATH)))
+            throw new RuntimeException("Heart icon not found: " + HEARTSHAPE_PATH);
+        var heart = new JLabel(new ImageIcon(resource));
         heart.setForeground(GAME_OVER_LABEL_COLOR);
         return heart;
     }
