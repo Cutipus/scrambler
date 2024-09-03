@@ -48,13 +48,14 @@ public class App {
                         stackHorizontally(
                                 createButton(BRIGHT_ORANGE.darker(), BRIGHT_ORANGE.brighter(), Color.BLACK,
                                         "Restart"),
-                                createQuitButton(NEON_PURPLE.brighter().brighter(), OXBLOOD_RED.darker(),SUNSET_PURPLE, "Quit"))));
+                                createQuitButton(NEON_PURPLE.brighter().brighter(), OXBLOOD_RED.darker(), SUNSET_PURPLE,
+                                        "Quit"))));
 
-        JButton restartButton = createButton(SUNSET_YELLOW,SUNSET_RED, SUNSET_PURPLE, "Restart");
-        Box victoryScreen = createScreen(SUNSET_YELLOW,SUNSET_RED,stackVertically(
+        JButton restartButton = createButton(SUNSET_YELLOW, SUNSET_RED, SUNSET_PURPLE, "Restart");
+        Box victoryScreen = createScreen(SUNSET_YELLOW, SUNSET_RED, stackVertically(
                 createLabel(SUNSET_RED_PURPLE, "Victory"),
                 restartButton,
-                createQuitButton(SUNSET_ORANGE,SUNSET_RED,SUNSET_BLUE, "Quit")));
+                createQuitButton(SUNSET_ORANGE, SUNSET_RED, SUNSET_BLUE, "Quit")));
 
         Box screenSwitcher = Box.createHorizontalBox();
         screenSwitcher.add(victoryScreen);
@@ -111,7 +112,7 @@ public class App {
     private static JFrame createFrame(Box mainScene) {
         JFrame frame = new JFrame("Scrambler");
         frame.add(mainScene);
-        frame.setMinimumSize(new Dimension(300, 500));
+        frame.setMinimumSize(new Dimension(400, 500));
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
