@@ -8,14 +8,16 @@ import java.util.Objects;
 import javax.swing.*;
 
 public class App {
-
     private static final String HEARTSHAPE_PATH = "heartshape-32x32.png";
     private static final int STARTING_HP = 3;
+
+    public static final Color BRIGHT_ORANGE = Color.decode("#ffac00");
+    public static final Color OXBLOOD_RED = Color.decode("#4A0000");
+    public static final Color NEON_PURPLE = Color.decode("#BC13FE");
+
     public static final Color DARKER_BLUE = Color.decode("#222B35");
     public static final Color DARK_BLUE = Color.decode("#303D4A");
     public static final Color STEEL_BLUE = Color.decode("#8497B0");
-    public static final Color GAME_OVER_BG_COLOR = new Color(131, 14, 14);
-    public static final Color GAME_OVER_LABEL_COLOR = Color.RED;
     public static final Color VICTORY_SCREEN_BG_COLOR = Color.BLUE;
     public static final List<String> words = List.of(
             "hello", "world", "cat", "wow", "live", "evil", "veil", "vile",
@@ -34,9 +36,13 @@ public class App {
                 stackHorizontally(userInput, submitButton),
                 createQuitButton(DARK_BLUE, Color.MAGENTA)));
 
-        Box gameOverScreen = createScreen(GAME_OVER_BG_COLOR, Color.RED, stackVertically(
-                createLabel(GAME_OVER_LABEL_COLOR, "Game Over"),
-                createQuitButton(DARK_BLUE, Color.MAGENTA)));
+        Box gameOverScreen = createScreen(OXBLOOD_RED, NEON_PURPLE,
+                stackVertically(
+                        createLabel(BRIGHT_ORANGE, "YOU DIED"),
+                        stackHorizontally(
+                                createButton(BRIGHT_ORANGE.darker(), BRIGHT_ORANGE.brighter(), Color.BLACK,
+                                        "Restart"),
+                                createQuitButton(NEON_PURPLE.brighter().brighter(), OXBLOOD_RED.darker()))));
 
         JButton restartButton = createButton(DARK_BLUE, Color.MAGENTA, Color.BLACK, "Restart");
         Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, Color.RED, stackVertically(
@@ -88,7 +94,7 @@ public class App {
     }
 
     private static JButton createQuitButton(Color topColor, Color bottomColor) {
-        JButton quitButton = createButton(topColor, bottomColor, Color.BLACK,"Quit");
+        JButton quitButton = createButton(topColor, bottomColor, Color.BLACK, "Quit");
         quitButton.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createBevelBorder(0,
                         STEEL_BLUE, STEEL_BLUE,
@@ -120,7 +126,6 @@ public class App {
         if (Objects.isNull(resource = App.class.getResource(HEARTSHAPE_PATH)))
             throw new RuntimeException("Heart icon not found: " + HEARTSHAPE_PATH);
         var heart = new JLabel(new ImageIcon(resource));
-        heart.setForeground(GAME_OVER_LABEL_COLOR);
         return heart;
     }
 
