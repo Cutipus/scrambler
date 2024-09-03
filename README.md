@@ -9,10 +9,10 @@
 - [X] Display new challenge if you win
 - [x] Make a VICTORY screen
 - [x] Add a restart button
-- [ ] Gradiant button background color
+- [x] Gradiant button background color
+- [x] Get a logo for the health display
 - [ ] Make restart button reset game
 - [ ] Make a GAME OVER screen better looking
 - [ ] Get a logo for the app
-- [ ] Get a logo for the health display
 - [ ] Display game statistics in GAME OVER scene
 - [ ] Add difficulty levels
