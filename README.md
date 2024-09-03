@@ -13,6 +13,7 @@
 - [x] Get a logo for the health display
 - [X] Rework victory screen looks
 - [X] Rework defeat screen looks
+- [ ] Fix horizontal stack
 - [ ] Different color for button when armed
 - [ ] Rework Game screen looks
 - [ ] Make restart button reset game
