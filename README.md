@@ -19,3 +19,4 @@
 - [ ] Get a logo for the app
 - [ ] Display game statistics in GAME OVER scene
 - [ ] Add difficulty levels
+- [ ] Submit answer by pressing ENTER
