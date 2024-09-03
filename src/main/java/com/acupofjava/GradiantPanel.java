@@ -12,6 +12,7 @@ public class GradiantPanel extends Box {
         super(BoxLayout.X_AXIS);
         this.topColor = topColor;
         this.bottomColor = bottomColor;
+        //as;dlkas;djkas;
     }
 
     @Override
