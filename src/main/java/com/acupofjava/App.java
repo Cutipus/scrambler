@@ -15,6 +15,12 @@ public class App {
     public static final Color OXBLOOD_RED = Color.decode("#4A0000");
     public static final Color NEON_PURPLE = Color.decode("#BC13FE");
 
+    private static final Color SUNSET_YELLOW = Color.decode("#ffbf15");
+    private static final Color SUNSET_ORANGE = Color.decode("#f2541B");
+    private static final Color SUNSET_RED = Color.decode("#c91853");
+    private static final Color SUNSET_RED_PURPLE = Color.decode("#a8186e");
+    private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
+    private static final Color SUNSET_BLUE = Color.decode("#301d7d");
     public static final Color DARKER_BLUE = Color.decode("#222B35");
     public static final Color DARK_BLUE = Color.decode("#303D4A");
     public static final Color STEEL_BLUE = Color.decode("#8497B0");
@@ -34,7 +40,7 @@ public class App {
                 healthDisplay,
                 challengeWordLabel,
                 stackHorizontally(userInput, submitButton),
-                createQuitButton(DARK_BLUE, Color.MAGENTA)));
+                createQuitButton(DARK_BLUE, Color.MAGENTA, SUNSET_PURPLE, "Quit")));
 
         Box gameOverScreen = createScreen(OXBLOOD_RED, NEON_PURPLE,
                 stackVertically(
@@ -42,16 +48,16 @@ public class App {
                         stackHorizontally(
                                 createButton(BRIGHT_ORANGE.darker(), BRIGHT_ORANGE.brighter(), Color.BLACK,
                                         "Restart"),
-                                createQuitButton(NEON_PURPLE.brighter().brighter(), OXBLOOD_RED.darker()))));
+                                createQuitButton(NEON_PURPLE.brighter().brighter(), OXBLOOD_RED.darker(),SUNSET_PURPLE, "Quit"))));
 
-        JButton restartButton = createButton(DARK_BLUE, Color.MAGENTA, Color.BLACK, "Restart");
-        Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, Color.RED, stackVertically(
-                createLabel(STEEL_BLUE, "Victory"),
+        JButton restartButton = createButton(SUNSET_YELLOW,SUNSET_RED, SUNSET_PURPLE, "Restart");
+        Box victoryScreen = createScreen(SUNSET_YELLOW,SUNSET_RED,stackVertically(
+                createLabel(SUNSET_RED_PURPLE, "Victory"),
                 restartButton,
-                createQuitButton(DARK_BLUE, Color.MAGENTA)));
+                createQuitButton(SUNSET_ORANGE,SUNSET_RED,SUNSET_BLUE, "Quit")));
 
         Box screenSwitcher = Box.createHorizontalBox();
-        screenSwitcher.add(gameScreen);
+        screenSwitcher.add(victoryScreen);
         JFrame frame = createFrame(screenSwitcher);
         frame.setVisible(true);
 
@@ -93,13 +99,11 @@ public class App {
         });
     }
 
-    private static JButton createQuitButton(Color topColor, Color bottomColor) {
-        JButton quitButton = createButton(topColor, bottomColor, Color.BLACK, "Quit");
-        quitButton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createBevelBorder(0,
-                        STEEL_BLUE, STEEL_BLUE,
-                        Color.MAGENTA, Color.MAGENTA),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+    private static JButton createQuitButton(Color topColor, Color bottomColor, Color textColor, String text) {
+        JButton quitButton = new GradiantButton(topColor, bottomColor, text);
+        quitButton.setForeground(textColor);
+        quitButton.setFocusable(false);
+        quitButton.setFont(new Font("Arial", Font.BOLD, 15));
         quitButton.addActionListener(e -> System.exit(0));
         return quitButton;
     }
