@@ -21,24 +21,24 @@ public class App {
         Game game = new Game(words, new Hitpoints(10));
 
         Box healthDisplay = createHealthDisplay(game.getHP());
-        JLabel challengeWordLabel = createLabel(STEEL_BLUE, game.generateScramble());
+        JLabel challengeWordLabel = createLabel(Color.RED.darker().darker(), game.generateScramble());
         JTextField userInput = createTextField("");
-        JButton submitButton = createButton("Submit");
+        JButton submitButton = createButton(DARK_BLUE, Color.MAGENTA, Color.BLACK, "Submit");
         Box gameScreen = createScreen(Color.CYAN, Color.MAGENTA, stackVertically(
                 healthDisplay,
                 challengeWordLabel,
                 stackHorizontally(userInput, submitButton),
-                createQuitButton()));
+                createQuitButton(DARK_BLUE, Color.MAGENTA)));
 
         Box gameOverScreen = createScreen(GAME_OVER_BG_COLOR, Color.RED, stackVertically(
                 createLabel(GAME_OVER_LABEL_COLOR, "Game Over"),
-                createQuitButton()));
+                createQuitButton(DARK_BLUE, Color.MAGENTA)));
 
-        JButton restartButton = createButton("Restart");
+        JButton restartButton = createButton(DARK_BLUE, Color.MAGENTA, Color.BLACK, "Restart");
         Box victoryScreen = createScreen(VICTORY_SCREEN_BG_COLOR, Color.RED, stackVertically(
                 createLabel(STEEL_BLUE, "Victory"),
                 restartButton,
-                createQuitButton()));
+                createQuitButton(DARK_BLUE, Color.MAGENTA)));
 
         Box screenSwitcher = Box.createHorizontalBox();
         screenSwitcher.add(gameScreen);
@@ -46,14 +46,10 @@ public class App {
         frame.setVisible(true);
 
         restartButton.addActionListener(clickEvent -> {
-            // restart iterator
-            // reset hearts
-            // change scene
             screenSwitcher.remove(victoryScreen);
             screenSwitcher.add(gameScreen);
             frame.pack();
             screenSwitcher.repaint();
-            // reset text
         });
 
         // Checks if user entered the correct answer and responds accordingly
@@ -87,10 +83,8 @@ public class App {
         });
     }
 
-    private static JButton createQuitButton() {
-        JButton quitButton = createButton("Quit");
-        quitButton.setBackground(Color.decode("#06c4c4"));
-        quitButton.setForeground(Color.MAGENTA);
+    private static JButton createQuitButton(Color topColor, Color bottomColor) {
+        JButton quitButton = createButton(topColor, bottomColor, Color.BLACK,"Quit");
         quitButton.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createBevelBorder(0,
                         STEEL_BLUE,STEEL_BLUE,
@@ -136,8 +130,9 @@ public class App {
         return userInput;
     }
 
-    private static JButton createButton(String text) {
-        JButton button = new JButton(text);
+    private static JButton createButton(Color topColor, Color bottomColor, Color textColor, String text) {
+        JButton button = new GradiantButton(topColor, bottomColor, text);
+        button.setForeground(textColor);
         button.setFocusable(false);
         button.setFont(new Font("Arial", Font.BOLD, 15));
         return button;
