@@ -119,6 +119,12 @@ public class UILogic {
     }
 
     void onRestartActionPressed() {
+        game.restart();
+        challengeWordLabel.setText(game.generateScramble());
+        int HPToBeAdded = game.getHP() - healthDisplay.getComponents().length;
+        for (int i = 0; i < HPToBeAdded; i++) {
+            healthDisplay.add(Comps.centerVertically(Comps.createHeart()));
+        }
         changeScreen(gameScreen);
     }
 

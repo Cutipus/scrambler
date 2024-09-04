@@ -19,7 +19,7 @@ public class Game {
     public Game(List<String> words, Hitpoints hp) {
         this.words = words;
         this.hp = hp;
-        getChallenges();
+        resetIterator();
 
         if (challenges.hasNext())
             currentScrambleOption = challenges.next();
@@ -57,7 +57,7 @@ public class Game {
         }
     }
 
-    private void getChallenges() {
+    private void resetIterator() {
         List<ScrambleOption> challengeList = validWordsPermutation(words.stream()).entrySet().stream()
                 .map(ScrambleOption::fromEntry)
                 .filter(scrambleOption -> {
@@ -90,4 +90,14 @@ public class Game {
                                 .collect(Collectors.toSet())));
     }
 
+    public void restart() {
+        hp.resetHP();
+        resetIterator();
+
+        if (challenges.hasNext())
+            currentScrambleOption = challenges.next();
+        else {
+            throw new NoSuchElementException("No challenges found!");
+        }
+    }
 }

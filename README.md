@@ -13,10 +13,10 @@
 - [x] Get a logo for the health display
 - [X] Rework victory screen looks
 - [X] Rework defeat screen looks
+- [X] Make restart button reset game
 - [ ] Fix horizontal stack
 - [ ] Different color for button when armed
 - [ ] Rework Game screen looks
-- [ ] Make restart button reset game
 - [ ] Get a logo for the app
 - [ ] Display game statistics in GAME OVER scene
 - [ ] Add difficulty levels

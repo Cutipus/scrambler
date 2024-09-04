@@ -28,7 +28,7 @@ public class Comps {
     }
 
     public static Box createHealthDisplay(int hp) {
-        var hearts = new JComponent[hp];
+        JComponent[] hearts = new JComponent[hp];
         for (int i = 0; i < hearts.length; i++)
             hearts[i] = createHeart();
         return stackHorizontally(hearts);
@@ -94,7 +94,7 @@ public class Comps {
         return gameOverBox;
     }
 
-    private static Box centerVertically(JComponent component) {
+    public static Box centerVertically(JComponent component) {
         Box innerBox = Box.createVerticalBox();
         innerBox.add(Box.createGlue());
         innerBox.add(component);
