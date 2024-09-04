@@ -4,14 +4,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
 import javax.swing.*;
 
 public class App {
-    private static final String HEARTSHAPE_PATH = "heartshape-32x32.png";
     private static final int STARTING_HP = 3;
 
     public static final Color BRIGHT_ORANGE = Color.decode("#ffac00");
@@ -35,48 +32,48 @@ public class App {
     public static void main(String[] args) {
         Game game = new Game(words, new Hitpoints(STARTING_HP));
 
-        Box healthDisplay = createHealthDisplay(game.getHP());
-        JLabel challengeWordLabel = createLabel(Color.RED.darker().darker(), game.generateScramble());
-        JTextField userInput = createTextField("");
-        JButton submitButton = createButton(
+        Box healthDisplay = Comps.createHealthDisplay(game.getHP());
+        JLabel challengeWordLabel = Comps.createLabel(Color.RED.darker().darker(), game.generateScramble());
+        JTextField userInput = Comps.createTextField("");
+        JButton submitButton = Comps.createButton(
                 DARK_BLUE,
                 Color.MAGENTA,
                 Color.BLACK,
                 "Submit");
-        Box gameScreen = createScreen(Color.CYAN, Color.MAGENTA, stackVertically(
+        Box gameScreen = Comps.createScreen(Color.CYAN, Color.MAGENTA, Comps.stackVertically(
                 healthDisplay,
                 challengeWordLabel,
-                stackHorizontally(userInput, submitButton),
-                createQuitButton(
+                Comps.stackHorizontally(userInput, submitButton),
+                Comps.createQuitButton(
                         DARK_BLUE,
                         Color.MAGENTA,
                         SUNSET_PURPLE,
                         "Quit")));
 
-        Box gameOverScreen = createScreen(OXBLOOD_RED, NEON_PURPLE,
-                stackVertically(
-                        createLabel(BRIGHT_ORANGE, "YOU DIED"),
-                        stackHorizontally(
-                                createButton(
+        Box gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE,
+                Comps.stackVertically(
+                        Comps.createLabel(BRIGHT_ORANGE, "YOU DIED"),
+                        Comps.stackHorizontally(
+                                Comps.createButton(
                                         BRIGHT_ORANGE.darker(),
                                         BRIGHT_ORANGE.brighter(),
                                         Color.BLACK,
                                         "Restart"),
-                                createQuitButton(
+                                Comps.createQuitButton(
                                         NEON_PURPLE.brighter().brighter(),
                                         OXBLOOD_RED.darker(),
                                         SUNSET_PURPLE,
                                         "Quit"))));
 
-        JButton restartButton = createButton(
+        JButton restartButton = Comps.createButton(
                 SUNSET_YELLOW,
                 SUNSET_RED,
                 SUNSET_PURPLE,
                 "Restart");
-        Box victoryScreen = createScreen(SUNSET_YELLOW, SUNSET_RED, stackVertically(
-                createLabel(SUNSET_RED_PURPLE, "Victory"),
+        Box victoryScreen = Comps.createScreen(SUNSET_YELLOW, SUNSET_RED, Comps.stackVertically(
+                Comps.createLabel(SUNSET_RED_PURPLE, "Victory"),
                 restartButton,
-                createQuitButton(
+                Comps.createQuitButton(
                         SUNSET_ORANGE,
                         SUNSET_RED,
                         SUNSET_BLUE,
@@ -84,7 +81,7 @@ public class App {
 
         Box screenSwitcher = Box.createHorizontalBox();
         screenSwitcher.add(gameScreen);
-        JFrame frame = createFrame(screenSwitcher);
+        JFrame frame = Comps.createFrame(screenSwitcher);
         frame.setVisible(true);
 
         restartButton.addActionListener(clickEvent -> {
@@ -153,95 +150,4 @@ public class App {
         };
     }
 
-    private static JButton createQuitButton(Color topColor, Color bottomColor, Color textColor, String text) {
-        JButton quitButton = new GradiantButton(topColor, bottomColor, text);
-        quitButton.setForeground(textColor);
-        quitButton.setFocusable(false);
-        quitButton.setFont(new Font("Arial", Font.BOLD, 15));
-        quitButton.addActionListener(e -> System.exit(0));
-        return quitButton;
-    }
-
-    private static JFrame createFrame(Box mainScene) {
-        JFrame frame = new JFrame("Scrambler");
-        frame.add(mainScene);
-        frame.setMinimumSize(new Dimension(400, 500));
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        return frame;
-    }
-
-    private static Box createHealthDisplay(int hp) {
-        var hearts = new JComponent[hp];
-        for (int i = 0; i < hearts.length; i++)
-            hearts[i] = createHeart();
-        return stackHorizontally(hearts);
-    }
-
-    private static JComponent createHeart() {
-        URL resource;
-        if (Objects.isNull(resource = App.class.getResource(HEARTSHAPE_PATH)))
-            throw new RuntimeException("Heart icon not found: " + HEARTSHAPE_PATH);
-        var heart = new JLabel(new ImageIcon(resource));
-        return heart;
-    }
-
-    private static JLabel createLabel(Color textColor, String text) {
-        JLabel gameOverText = new JLabel(text);
-        gameOverText.setForeground(textColor);
-        gameOverText.setFont(new Font("Arial", Font.BOLD, 40));
-        return gameOverText;
-    }
-
-    private static JTextField createTextField(String initialText) {
-        JTextField userInput = new JTextField(initialText);
-        userInput.setMaximumSize(new Dimension(150, 25));
-        return userInput;
-    }
-
-    private static JButton createButton(Color topColor, Color bottomColor, Color textColor, String text) {
-        JButton button = new GradiantButton(topColor, bottomColor, text);
-        button.setForeground(textColor);
-        button.setFocusable(false);
-        button.setFont(new Font("Arial", Font.BOLD, 15));
-        return button;
-    }
-
-    private static Box createScreen(Color topColor, Color bottomColor, JComponent collectionOfComponents) {
-        Box screen = centerHorizontally(centerVertically(collectionOfComponents));
-        GradiantPanel backgroundScreen = new GradiantPanel(topColor, bottomColor);
-        backgroundScreen.add(screen);
-        return backgroundScreen;
-    }
-
-    private static Box stackHorizontally(JComponent... components) {
-        Box box = Box.createHorizontalBox();
-        for (JComponent component : components)
-            box.add(centerVertically(component));
-        return box;
-    }
-
-    private static Box stackVertically(JComponent... components) {
-        Box outerBox = Box.createVerticalBox();
-        for (JComponent component : components)
-            outerBox.add(centerHorizontally(component));
-        return outerBox;
-    }
-
-    private static Box centerHorizontally(JComponent component) {
-        Box gameOverBox = Box.createHorizontalBox();
-        gameOverBox.add(Box.createGlue());
-        gameOverBox.add(component);
-        gameOverBox.add(Box.createGlue());
-        return gameOverBox;
-    }
-
-    private static Box centerVertically(JComponent component) {
-        Box innerBox = Box.createVerticalBox();
-        innerBox.add(Box.createGlue());
-        innerBox.add(component);
-        innerBox.add(Box.createGlue());
-        return innerBox;
-    }
 }
