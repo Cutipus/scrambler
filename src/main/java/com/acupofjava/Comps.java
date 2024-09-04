@@ -3,6 +3,7 @@ package com.acupofjava;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.Objects;
 
@@ -17,18 +18,8 @@ import javax.swing.JTextField;
 public class Comps {
     private static final String HEARTSHAPE_PATH = "heartshape-32x32.png";
 
-    public static JButton createQuitButton(Color topColor, Color bottomColor, Color textColor, String text) {
-        JButton quitButton = new GradiantButton(topColor, bottomColor, text);
-        quitButton.setForeground(textColor);
-        quitButton.setFocusable(false);
-        quitButton.setFont(new Font("Arial", Font.BOLD, 15));
-        quitButton.addActionListener(e -> System.exit(0));
-        return quitButton;
-    }
-
-    public static JFrame createFrame(Box mainScene) {
+    public static JFrame createFrame() {
         JFrame frame = new JFrame("Scrambler");
-        frame.add(mainScene);
         frame.setMinimumSize(new Dimension(400, 500));
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
@@ -64,11 +55,13 @@ public class Comps {
         return userInput;
     }
 
-    public static JButton createButton(Color topColor, Color bottomColor, Color textColor, String text) {
+    public static JButton createButton(Color topColor, Color bottomColor, Color textColor, String text,
+            ActionListener l) {
         JButton button = new GradiantButton(topColor, bottomColor, text);
         button.setForeground(textColor);
         button.setFocusable(false);
         button.setFont(new Font("Arial", Font.BOLD, 15));
+        button.addActionListener(l);
         return button;
     }
 
