@@ -1,6 +1,9 @@
 package com.acupofjava;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
@@ -35,30 +38,52 @@ public class App {
         Box healthDisplay = createHealthDisplay(game.getHP());
         JLabel challengeWordLabel = createLabel(Color.RED.darker().darker(), game.generateScramble());
         JTextField userInput = createTextField("");
-        JButton submitButton = createButton(DARK_BLUE, Color.MAGENTA, Color.BLACK, "Submit");
+        JButton submitButton = createButton(
+                DARK_BLUE,
+                Color.MAGENTA,
+                Color.BLACK,
+                "Submit");
         Box gameScreen = createScreen(Color.CYAN, Color.MAGENTA, stackVertically(
                 healthDisplay,
                 challengeWordLabel,
                 stackHorizontally(userInput, submitButton),
-                createQuitButton(DARK_BLUE, Color.MAGENTA, SUNSET_PURPLE, "Quit")));
+                createQuitButton(
+                        DARK_BLUE,
+                        Color.MAGENTA,
+                        SUNSET_PURPLE,
+                        "Quit")));
 
         Box gameOverScreen = createScreen(OXBLOOD_RED, NEON_PURPLE,
                 stackVertically(
                         createLabel(BRIGHT_ORANGE, "YOU DIED"),
                         stackHorizontally(
-                                createButton(BRIGHT_ORANGE.darker(), BRIGHT_ORANGE.brighter(), Color.BLACK,
+                                createButton(
+                                        BRIGHT_ORANGE.darker(),
+                                        BRIGHT_ORANGE.brighter(),
+                                        Color.BLACK,
                                         "Restart"),
-                                createQuitButton(NEON_PURPLE.brighter().brighter(), OXBLOOD_RED.darker(), SUNSET_PURPLE,
+                                createQuitButton(
+                                        NEON_PURPLE.brighter().brighter(),
+                                        OXBLOOD_RED.darker(),
+                                        SUNSET_PURPLE,
                                         "Quit"))));
 
-        JButton restartButton = createButton(SUNSET_YELLOW, SUNSET_RED, SUNSET_PURPLE, "Restart");
+        JButton restartButton = createButton(
+                SUNSET_YELLOW,
+                SUNSET_RED,
+                SUNSET_PURPLE,
+                "Restart");
         Box victoryScreen = createScreen(SUNSET_YELLOW, SUNSET_RED, stackVertically(
                 createLabel(SUNSET_RED_PURPLE, "Victory"),
                 restartButton,
-                createQuitButton(SUNSET_ORANGE, SUNSET_RED, SUNSET_BLUE, "Quit")));
+                createQuitButton(
+                        SUNSET_ORANGE,
+                        SUNSET_RED,
+                        SUNSET_BLUE,
+                        "Quit")));
 
         Box screenSwitcher = Box.createHorizontalBox();
-        screenSwitcher.add(victoryScreen);
+        screenSwitcher.add(gameScreen);
         JFrame frame = createFrame(screenSwitcher);
         frame.setVisible(true);
 
@@ -70,7 +95,35 @@ public class App {
         });
 
         // Checks if user entered the correct answer and responds accordingly
-        submitButton.addActionListener(e -> {
+        submitButton.addActionListener(userSubmit(game, healthDisplay, challengeWordLabel, userInput, gameScreen,
+                gameOverScreen, victoryScreen,
+                screenSwitcher, frame));
+
+        userInput.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == '\n')
+                    userSubmit(game, healthDisplay, challengeWordLabel, userInput, gameScreen,
+                            gameOverScreen, victoryScreen,
+                            screenSwitcher, frame).actionPerformed(null);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+
+        });
+
+    }
+
+    private static ActionListener userSubmit(Game game, Box healthDisplay, JLabel challengeWordLabel,
+            JTextField userInput, Box gameScreen, Box gameOverScreen, Box victoryScreen, Box screenSwitcher,
+            JFrame frame) {
+        return e -> {
             String userGuess = userInput.getText();
             PlayResult playResult = game.play(userGuess);
             switch (playResult) {
@@ -97,7 +150,7 @@ public class App {
                     challengeWordLabel.setText(nextWord);
                 }
             }
-        });
+        };
     }
 
     private static JButton createQuitButton(Color topColor, Color bottomColor, Color textColor, String text) {
