@@ -28,6 +28,10 @@ public class Game {
         }
     }
 
+    public Game(List<String> words, int hp) {
+        this(words, new Hitpoints(hp));
+    }
+
     public String generateScramble() {
         return currentScrambleOption.scramble((int) (Math.random() * Integer.MAX_VALUE));
     }

@@ -9,7 +9,7 @@ public class App {
             "cat", "act", "no", "on", "bat", "tab");
 
     public static void main(String[] args) {
-        Game game = new Game(words, new Hitpoints(STARTING_HP));
+        Game game = new Game(words, STARTING_HP);
         UILogic ui = new UILogic(game);
 
         ui.start();
