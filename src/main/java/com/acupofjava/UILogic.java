@@ -1,6 +1,6 @@
 package com.acupofjava;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -32,10 +32,10 @@ public class UILogic {
     JTextField userInput;
     JLabel challengeWordLabel;
 
-    Box gameOverScreen;
-    Box gameScreen;
-    Box victoryScreen;
-    Box currentScreen;
+    Container gameOverScreen;
+    Container gameScreen;
+    Container victoryScreen;
+    Container currentScreen;
 
     public UILogic(Game game) {
         this.game = game;
@@ -147,7 +147,7 @@ public class UILogic {
         }
     }
 
-    private void changeScreen(Box newScreen) {
+    private void changeScreen(Container newScreen) {
         frame.remove(currentScreen);
         currentScreen = newScreen;
         frame.add(newScreen);

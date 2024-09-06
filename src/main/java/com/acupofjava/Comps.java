@@ -1,19 +1,11 @@
 package com.acupofjava;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.Objects;
 
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class Comps {
     private static final String HEARTSHAPE_PATH = "heartshape-32x32.png";
@@ -65,10 +57,9 @@ public class Comps {
         return button;
     }
 
-    public static Box createScreen(Color topColor, Color bottomColor, JComponent collectionOfComponents) {
-        Box screen = centerHorizontally(centerVertically(collectionOfComponents));
+    public static Container createScreen(Color topColor, Color bottomColor, JComponent componentToPutInCenter) {
         GradiantPanel backgroundScreen = new GradiantPanel(topColor, bottomColor);
-        backgroundScreen.add(screen);
+        backgroundScreen.add(componentToPutInCenter, BorderLayout.CENTER);
         return backgroundScreen;
     }
 
