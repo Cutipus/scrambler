@@ -86,7 +86,7 @@ public class UILogic {
                         SUNSET_ORANGE,
                         SUNSET_RED,
                         SUNSET_BLUE,
-                        "Quit",
+                        "Restart",
                         e -> onRestartActionPressed()),
                 Comps.createButton(
                         SUNSET_ORANGE,
@@ -141,6 +141,7 @@ public class UILogic {
                     healthDisplay.remove(0);
                 }
                 healthDisplay.repaint();
+                frame.pack();
             }
 
             case PlayResult.Right(String nextWord) -> challengeWordLabel.setText(nextWord);

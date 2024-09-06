@@ -20,17 +20,17 @@ public class Comps {
     }
 
     public static Box createHealthDisplay(int hp) {
-        JComponent[] hearts = new JComponent[hp];
-        for (int i = 0; i < hearts.length; i++)
-            hearts[i] = createHeart();
-        return stackHorizontally(hearts);
+        Box healthDisplay = Box.createHorizontalBox();
+        for (int i = 0; i < hp; i++)
+            healthDisplay.add(createHeart());
+        return healthDisplay;
     }
 
     public static JComponent createHeart() {
         URL resource;
         if (Objects.isNull(resource = App.class.getResource(HEARTSHAPE_PATH)))
             throw new RuntimeException("Heart icon not found: " + HEARTSHAPE_PATH);
-        var heart = new JLabel(new ImageIcon(resource));
+        JLabel heart = new JLabel(new ImageIcon(resource));
         return heart;
     }
 
