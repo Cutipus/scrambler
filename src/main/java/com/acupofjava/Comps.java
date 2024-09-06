@@ -19,6 +19,16 @@ public class Comps {
         return frame;
     }
 
+    public static Container createScreen(Color topColor, Color bottomColor, JComponent componentToPutInCenter) {
+        GradiantPanel backgroundScreen = new GradiantPanel(topColor, bottomColor);
+        Box boxToHoldComponentToPutInCenter = Box.createHorizontalBox();
+        boxToHoldComponentToPutInCenter.add(Box.createHorizontalGlue());
+        boxToHoldComponentToPutInCenter.add(componentToPutInCenter);
+        boxToHoldComponentToPutInCenter.add(Box.createHorizontalGlue());
+        backgroundScreen.add(boxToHoldComponentToPutInCenter, BorderLayout.CENTER);
+        return backgroundScreen;
+    }
+
     public static Box createHealthDisplay(int hp) {
         Box healthDisplay = Box.createHorizontalBox();
         for (int i = 0; i < hp; i++)
@@ -44,11 +54,12 @@ public class Comps {
     public static JTextField createTextField(String initialText) {
         JTextField userInput = new JTextField(initialText);
         userInput.setMaximumSize(new Dimension(150, 25));
+        userInput.setPreferredSize(new Dimension(150, 25));
         return userInput;
     }
 
     public static JButton createButton(Color topColor, Color bottomColor, Color textColor, String text,
-            ActionListener l) {
+                                       ActionListener l) {
         JButton button = new GradiantButton(topColor, bottomColor, text);
         button.setForeground(textColor);
         button.setFocusable(false);
@@ -57,40 +68,23 @@ public class Comps {
         return button;
     }
 
-    public static Container createScreen(Color topColor, Color bottomColor, JComponent componentToPutInCenter) {
-        GradiantPanel backgroundScreen = new GradiantPanel(topColor, bottomColor);
-        backgroundScreen.add(componentToPutInCenter, BorderLayout.CENTER);
-        return backgroundScreen;
-    }
-
     public static Box stackHorizontally(JComponent... components) {
         Box box = Box.createHorizontalBox();
-        for (JComponent component : components)
-            box.add(centerVertically(component));
+        for (JComponent component : components) {
+            component.setAlignmentY(Component.CENTER_ALIGNMENT);
+            box.add(component);
+        }
         return box;
     }
 
     public static Box stackVertically(JComponent... components) {
         Box outerBox = Box.createVerticalBox();
-        for (JComponent component : components)
-            outerBox.add(centerHorizontally(component));
+        for (JComponent component : components) {
+            component.setAlignmentX(Component.CENTER_ALIGNMENT);
+            outerBox.add(component);
+        }
+        outerBox.setAlignmentY(Component.CENTER_ALIGNMENT);
+        outerBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         return outerBox;
     }
-
-    public static Box centerHorizontally(JComponent component) {
-        Box gameOverBox = Box.createHorizontalBox();
-        gameOverBox.add(Box.createGlue());
-        gameOverBox.add(component);
-        gameOverBox.add(Box.createGlue());
-        return gameOverBox;
-    }
-
-    public static Box centerVertically(JComponent component) {
-        Box innerBox = Box.createVerticalBox();
-        innerBox.add(Box.createGlue());
-        innerBox.add(component);
-        innerBox.add(Box.createGlue());
-        return innerBox;
-    }
-
 }
