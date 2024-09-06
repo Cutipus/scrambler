@@ -14,10 +14,11 @@
 - [X] Rework victory screen looks
 - [X] Rework defeat screen looks
 - [X] Make restart button reset game
+- [X] Submit answer by pressing ENTER
 - [ ] Fix horizontal stack
 - [ ] Different color for button when armed
 - [ ] Rework Game screen looks
 - [ ] Get a logo for the app
 - [ ] Display game statistics in GAME OVER scene
 - [ ] Add difficulty levels
-- [ ] Submit answer by pressing ENTER
+- [ ] Optimize word scramble algorithm
