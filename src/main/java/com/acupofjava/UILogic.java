@@ -105,7 +105,7 @@ public class UILogic {
                         "Quit",
                         e -> onQuitActionPressed())));
 
-        currentScreen = gameScreen;
+        currentScreen = victoryScreen;
         frame.add(currentScreen);
 
         userInput.addKeyListener(new KeyListener() {
@@ -145,7 +145,9 @@ public class UILogic {
         switch (playResult) {
             case PlayResult.Defeat() -> changeScreen(gameOverScreen);
 
-            case PlayResult.Victory() -> changeScreen(victoryScreen);
+            case PlayResult.Victory(WordStat[] words) -> {
+                changeScreen(victoryScreen);
+            }
 
             case PlayResult.Wrong(int hpLeft) -> {
                 for (int i = 0; i < healthDisplay.getComponents().length - hpLeft; i++) {

@@ -1,7 +1,7 @@
 package com.acupofjava;
 
 public sealed interface PlayResult {
-    public static record Victory() implements PlayResult {
+    public static record Victory(WordStat[] gameStats) implements PlayResult {
     }
 
     public static record Defeat() implements PlayResult {

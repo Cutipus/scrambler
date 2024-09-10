@@ -1,5 +1,6 @@
 package com.acupofjava;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -46,7 +47,7 @@ public class Game {
                 currentScrambleOption = challenges.next();
                 return new PlayResult.Right(generateScramble());
             } else {
-                return new PlayResult.Victory();
+                return new PlayResult.Victory(new WordStat[] { new WordStat("someWord", Duration.ZERO, 0) });
             }
         } else {
             if (hp.hit()) {
