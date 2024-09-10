@@ -47,19 +47,19 @@ public class UILogic {
 
         gameScreen = Comps.createScreen(Color.CYAN, Color.MAGENTA, Comps.stackVertically(
                 healthDisplay,
-                Box.createVerticalStrut(30),
+                Box.createRigidArea(new Dimension(0, 30)),
                 challengeWordLabel,
-                Box.createVerticalStrut(30),
+                Box.createRigidArea(new Dimension(0, 30)),
                 Comps.stackHorizontally(
                         userInput,
-                        Box.createVerticalStrut(30),
+                        Box.createRigidArea(new Dimension(15, 0)),
                         Comps.createButton(
                                 DARK_BLUE,
                                 Color.MAGENTA,
                                 Color.BLACK,
                                 "Submit",
                                 e -> onSubmitActionPressed())),
-                Box.createVerticalStrut(30),
+                Box.createRigidArea(new Dimension(0, 30)),
                 Comps.createButton(
                         DARK_BLUE,
                         Color.MAGENTA,
@@ -67,37 +67,42 @@ public class UILogic {
                         "Quit",
                         e -> onQuitActionPressed())));
 
-        gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE,
-                Comps.stackVertically(
-                        Comps.createLabel(BRIGHT_ORANGE, "YOU DIED"),
-                        Comps.stackHorizontally(
-                                Comps.createButton(
-                                        BRIGHT_ORANGE.darker(),
-                                        BRIGHT_ORANGE.brighter(),
-                                        Color.BLACK,
-                                        "Restart",
-                                        e -> onRestartActionPressed()),
-                                Comps.createButton(
-                                        NEON_PURPLE.brighter().brighter(),
-                                        OXBLOOD_RED.darker(),
-                                        SUNSET_PURPLE,
-                                        "Quit",
-                                        e -> onQuitActionPressed()))));
+        gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
+                Comps.createLabel(BRIGHT_ORANGE, "YOU DIED"),
+                Comps.stackHorizontally(
+                        Comps.createButton(
+                                BRIGHT_ORANGE.darker(),
+                                BRIGHT_ORANGE.brighter(),
+                                Color.BLACK,
+                                "Restart",
+                                e -> onRestartActionPressed()),
+                        Box.createRigidArea(new Dimension(15, 0)),
+                        Comps.createButton(
+                                NEON_PURPLE.brighter().brighter(),
+                                OXBLOOD_RED.darker(),
+                                SUNSET_PURPLE,
+                                "Quit",
+                                e -> onQuitActionPressed()))));
 
         victoryScreen = Comps.createScreen(SUNSET_YELLOW, SUNSET_RED, Comps.stackVertically(
                 Comps.createLabel(SUNSET_RED_PURPLE, "Victory"),
+                Box.createRigidArea(new Dimension(0, 30)),
                 Comps.createButton(
                         SUNSET_ORANGE,
                         SUNSET_RED,
                         SUNSET_BLUE,
                         "Restart",
                         e -> onRestartActionPressed()),
+                Box.createRigidArea(new Dimension(0, 30)),
                 Comps.createButton(
                         SUNSET_ORANGE,
                         SUNSET_RED,
                         SUNSET_BLUE,
                         "Quit",
                         e -> onQuitActionPressed())));
+
+        currentScreen = gameScreen;
+        frame.add(currentScreen);
 
         userInput.addKeyListener(new KeyListener() {
             @Override
@@ -114,8 +119,6 @@ public class UILogic {
             public void keyReleased(KeyEvent e) {
             }
         });
-        currentScreen = gameScreen;
-        frame.add(gameScreen);
     }
 
     void onQuitActionPressed() {

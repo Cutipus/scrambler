@@ -15,7 +15,7 @@
 - [X] Rework defeat screen looks
 - [X] Make restart button reset game
 - [X] Submit answer by pressing ENTER
-- [ ] Fix horizontal stack
+- [X] Fix horizontal stack
 - [ ] Different color for button when armed
 - [ ] Rework Game screen looks
 - [ ] Get a logo for the app
