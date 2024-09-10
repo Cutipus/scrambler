@@ -17,8 +17,12 @@
 - [X] Submit answer by pressing ENTER
 - [X] Fix horizontal stack
 - [ ] Different color for button when armed
-- [ ] Rework Game screen looks
 - [ ] Get a logo for the app
-- [ ] Display game statistics in GAME OVER scene
 - [ ] Add difficulty levels
 - [ ] Optimize word scramble algorithm
+- [ ] Display game statistics in GAME OVER scene
+  - [ ] Total time
+  - [ ] Time spent on individual word
+  - [ ] Word that took you the longest time to solve (max)
+  - [ ] Word that took you the shortest time to solve (min)
+  - [ ] Number of attempts relative to each word
