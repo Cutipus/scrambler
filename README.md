@@ -21,8 +21,21 @@
 - [ ] Add difficulty levels
 - [ ] Optimize word scramble algorithm
 - [ ] Display game statistics in GAME OVER scene
-  - [ ] Total time
-  - [ ] Time spent on individual word
-  - [ ] Word that took you the longest time to solve (max)
-  - [ ] Word that took you the shortest time to solve (min)
-  - [ ] Number of attempts relative to each word
+  - [ ] FLAWLESS VICTORY
+    - [ ] Total time
+    - [ ] Word that took you the longest time to solve (max)
+    - [ ] Word that took you the shortest time to solve (min)
+  - [ ] VICTORY
+    - [ ] Total time
+    - [ ] Word that took you the longest time to solve (max)
+    - [ ] Word that took you the shortest time to solve (min)
+    - [ ] HP lost per incorrect guess
+  - [ ] LOSE
+    - [ ] Total time
+    - [ ] Word that took you the longest time to solve (max)
+    - [ ] Word that took you the shortest time to solve (min)
+    - [ ] HP lost per incorrect guess
+  - [ ] EPIC LOSS
+    - [ ] Total time
+    - [ ] Present user with word that defeated them
+      - [ ] 
