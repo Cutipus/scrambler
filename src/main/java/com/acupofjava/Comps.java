@@ -59,7 +59,7 @@ public class Comps {
     }
 
     public static JButton createButton(Color topColor, Color bottomColor, Color textColor, String text,
-                                       ActionListener l) {
+            ActionListener l) {
         JButton button = new GradiantButton(topColor, bottomColor, text);
         button.setForeground(textColor);
         button.setFocusable(false);
@@ -68,23 +68,27 @@ public class Comps {
         return button;
     }
 
-    public static Box stackHorizontally(JComponent... components) {
+    public static Box stackHorizontally(Component... components) {
         Box box = Box.createHorizontalBox();
-        for (JComponent component : components) {
-            component.setAlignmentY(Component.CENTER_ALIGNMENT);
+        for (Component component : components) {
+            if (component instanceof JComponent jcomp)
+                jcomp.setAlignmentY(Component.CENTER_ALIGNMENT);
             box.add(component);
         }
+        box.setAlignmentY(Component.CENTER_ALIGNMENT);
+        box.setAlignmentX(Component.CENTER_ALIGNMENT);
         return box;
     }
 
-    public static Box stackVertically(JComponent... components) {
-        Box outerBox = Box.createVerticalBox();
-        for (JComponent component : components) {
-            component.setAlignmentX(Component.CENTER_ALIGNMENT);
-            outerBox.add(component);
+    public static Box stackVertically(Component... components) {
+        Box box = Box.createVerticalBox();
+        for (Component component : components) {
+            if (component instanceof JComponent jcomp)
+                jcomp.setAlignmentX(Component.CENTER_ALIGNMENT);
+            box.add(component);
         }
-        outerBox.setAlignmentY(Component.CENTER_ALIGNMENT);
-        outerBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        return outerBox;
+        box.setAlignmentY(Component.CENTER_ALIGNMENT);
+        box.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return box;
     }
 }

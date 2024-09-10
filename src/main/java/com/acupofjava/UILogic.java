@@ -47,15 +47,19 @@ public class UILogic {
 
         gameScreen = Comps.createScreen(Color.CYAN, Color.MAGENTA, Comps.stackVertically(
                 healthDisplay,
+                Box.createVerticalStrut(30),
                 challengeWordLabel,
+                Box.createVerticalStrut(30),
                 Comps.stackHorizontally(
                         userInput,
+                        Box.createVerticalStrut(30),
                         Comps.createButton(
                                 DARK_BLUE,
                                 Color.MAGENTA,
                                 Color.BLACK,
                                 "Submit",
                                 e -> onSubmitActionPressed())),
+                Box.createVerticalStrut(30),
                 Comps.createButton(
                         DARK_BLUE,
                         Color.MAGENTA,
