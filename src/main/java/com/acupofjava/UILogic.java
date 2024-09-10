@@ -40,7 +40,7 @@ public class UILogic {
     public UILogic(Game game) {
         this.game = game;
         healthDisplay = Comps.createHealthDisplay(game.getHP());
-        challengeWordLabel = Comps.createLabel(Color.RED.darker().darker(), game.generateScramble());
+        challengeWordLabel = Comps.createLabel(Color.RED.darker().darker(), game.generateScramble(), 40);
         userInput = Comps.createTextField("");
         frame = Comps.createFrame();
         userInput = Comps.createTextField("");
@@ -68,7 +68,7 @@ public class UILogic {
                         e -> onQuitActionPressed())));
 
         gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
-                Comps.createLabel(BRIGHT_ORANGE, "YOU DIED"),
+                Comps.createLabel(BRIGHT_ORANGE, "YOU DIED", 40),
                 Comps.stackHorizontally(
                         Comps.createButton(
                                 BRIGHT_ORANGE.darker(),
@@ -85,7 +85,11 @@ public class UILogic {
                                 e -> onQuitActionPressed()))));
 
         victoryScreen = Comps.createScreen(SUNSET_YELLOW, SUNSET_RED, Comps.stackVertically(
-                Comps.createLabel(SUNSET_RED_PURPLE, "Victory"),
+                Comps.createLabel(SUNSET_RED_PURPLE, "Victory", 40),
+                Box.createRigidArea(new Dimension(0, 30)),
+                Comps.createLabel(NEON_PURPLE, "you had x hearts remaining", 15),
+                Comps.createLabel(NEON_PURPLE, "it took you this much to finish", 15),
+                Comps.createLabel(NEON_PURPLE, "this was your best word: carrion", 15),
                 Box.createRigidArea(new Dimension(0, 30)),
                 Comps.createButton(
                         SUNSET_ORANGE,

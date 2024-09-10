@@ -44,10 +44,10 @@ public class Comps {
         return heart;
     }
 
-    public static JLabel createLabel(Color textColor, String text) {
+    public static JLabel createLabel(Color textColor, String text, int fontSize) {
         JLabel gameOverText = new JLabel(text);
         gameOverText.setForeground(textColor);
-        gameOverText.setFont(new Font("Arial", Font.BOLD, 40));
+        gameOverText.setFont(new Font("Arial", Font.BOLD, fontSize));
         return gameOverText;
     }
 
