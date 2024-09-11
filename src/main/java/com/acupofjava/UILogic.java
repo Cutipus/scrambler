@@ -3,6 +3,7 @@ package com.acupofjava;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.time.Duration;
 
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -105,7 +106,7 @@ public class UILogic {
                         "Quit",
                         e -> onQuitActionPressed())));
 
-        currentScreen = victoryScreen;
+        currentScreen = gameScreen;
         frame.add(currentScreen);
 
         userInput.addKeyListener(new KeyListener() {
@@ -143,13 +144,8 @@ public class UILogic {
         String userGuess = userInput.getText();
         PlayResult playResult = game.play(userGuess);
         switch (playResult) {
-            case PlayResult.Defeat() -> changeScreen(gameOverScreen);
-
-            case PlayResult.Victory(WordStat[] words) -> {
-                changeScreen(victoryScreen);
-            }
-
             case PlayResult.Wrong(int hpLeft) -> {
+                System.out.println("Player was wrong, " + hpLeft);
                 for (int i = 0; i < healthDisplay.getComponents().length - hpLeft; i++) {
                     healthDisplay.remove(0);
                 }
@@ -157,7 +153,30 @@ public class UILogic {
                 frame.pack();
             }
 
-            case PlayResult.Right(String nextWord) -> challengeWordLabel.setText(nextWord);
+            case PlayResult.Right(String nextChallenge) -> {
+                System.out.println("Player was right, " + nextChallenge);
+                challengeWordLabel.setText(nextChallenge);
+            }
+
+            case PlayResult.Defeat(Duration totalTime, WordStat longest, WordStat shortest) -> {
+                System.out.println("Player DEFEATED, it took " + totalTime.toSeconds() + " seconds");
+                changeScreen(gameOverScreen);
+            }
+
+            case PlayResult.EpicDefeat(Duration totalTime, WordStat wordThatDefeatedPlayer) -> {
+                System.out.println("Player EPICLY DEFEATED, it took " + totalTime.toSeconds() + " seconds");
+                changeScreen(gameOverScreen);
+            }
+
+            case PlayResult.Victory(Duration totalTime, WordStat longest, WordStat shortest) -> {
+                System.out.println("Player WON, it took " + totalTime.toSeconds() + " seconds");
+                changeScreen(victoryScreen);
+            }
+
+            case PlayResult.FlawlessVictory(Duration totalTime, WordStat longest, WordStat shortest) -> {
+                System.out.println("Player WON SPECTACULARLY, it took " + totalTime.toSeconds() + " seconds");
+                changeScreen(victoryScreen);
+            }
         }
     }
 

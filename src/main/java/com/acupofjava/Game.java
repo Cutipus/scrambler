@@ -16,6 +16,7 @@ public class Game {
     Iterator<ScrambleOption> challenges;
     ScrambleOption currentScrambleOption;
     Hitpoints hp;
+    boolean isFirstWord = true;
 
     public Game(List<String> words, Hitpoints hp) {
         this.words = words;
@@ -38,22 +39,35 @@ public class Game {
     }
 
     public int getHP() {
-        return hp.getHP();
+        return hp.getCurrentHP();
     }
 
     public PlayResult play(String userGuess) {
         if (currentScrambleOption.matches(userGuess)) {
             if (challenges.hasNext()) {
                 currentScrambleOption = challenges.next();
+                isFirstWord = false;
                 return new PlayResult.Right(generateScramble());
             } else {
-                return new PlayResult.Victory(new WordStat[] { new WordStat("someWord", Duration.ZERO, 0) });
+                if (hp.getCurrentHP() == hp.getStartingHP()) {
+                    PlayResult.FlawlessVictory flawlessVictory = new PlayResult.FlawlessVictory(
+                            Duration.ofSeconds(65),
+                            null,
+                            null);
+                    return flawlessVictory;
+                } else {
+                    return new PlayResult.Victory(null, null, null);
+                }
             }
         } else {
             if (hp.hit()) {
-                return new PlayResult.Wrong(hp.getHP());
+                return new PlayResult.Wrong(hp.getCurrentHP());
             } else {
-                return new PlayResult.Defeat();
+                if (isFirstWord) {
+                    return new PlayResult.EpicDefeat(Duration.ofSeconds(35), null);
+                } else {
+                    return new PlayResult.Defeat(null, null, null);
+                }
             }
         }
     }

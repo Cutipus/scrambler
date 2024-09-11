@@ -17,7 +17,11 @@ public class Hitpoints {
         this.hp = startingHP;
     }
 
-    public int getHP() {
+    public int getStartingHP() {
+        return startingHP;
+    }
+
+    public int getCurrentHP() {
         return hp;
     }
 
