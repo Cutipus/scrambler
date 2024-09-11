@@ -17,6 +17,7 @@ public class Game {
     ScrambleOption currentScrambleOption;
     Hitpoints hp;
     boolean isFirstWord = true;
+    long startTimeMS = System.currentTimeMillis();
 
     public Game(List<String> words, Hitpoints hp) {
         this.words = words;
@@ -43,6 +44,8 @@ public class Game {
     }
 
     public PlayResult play(String userGuess) {
+        long endTimeMS = System.currentTimeMillis();
+        Duration durationSinceStartOfGame = Duration.ofMillis(endTimeMS - startTimeMS);
         if (currentScrambleOption.matches(userGuess)) {
             if (challenges.hasNext()) {
                 currentScrambleOption = challenges.next();
@@ -50,13 +53,15 @@ public class Game {
                 return new PlayResult.Right(generateScramble());
             } else {
                 if (hp.getCurrentHP() == hp.getStartingHP()) {
-                    PlayResult.FlawlessVictory flawlessVictory = new PlayResult.FlawlessVictory(
-                            Duration.ofSeconds(65),
+                    return new PlayResult.FlawlessVictory(
+                            durationSinceStartOfGame,
                             null,
                             null);
-                    return flawlessVictory;
                 } else {
-                    return new PlayResult.Victory(null, null, null);
+                    return new PlayResult.Victory(
+                            durationSinceStartOfGame,
+                            null,
+                            null);
                 }
             }
         } else {
@@ -64,9 +69,14 @@ public class Game {
                 return new PlayResult.Wrong(hp.getCurrentHP());
             } else {
                 if (isFirstWord) {
-                    return new PlayResult.EpicDefeat(Duration.ofSeconds(35), null);
+                    return new PlayResult.EpicDefeat(
+                            durationSinceStartOfGame,
+                            null);
                 } else {
-                    return new PlayResult.Defeat(null, null, null);
+                    return new PlayResult.Defeat(
+                            durationSinceStartOfGame,
+                            null,
+                            null);
                 }
             }
         }
