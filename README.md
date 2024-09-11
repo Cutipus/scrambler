@@ -3,6 +3,8 @@
 ![example of how the project looks in action!](fail.gif)
 
 ## Todo
+
+### Version 1
 - [x] Add button to quit the game
 - [x] Make a GAME OVER screen
 - [X] Palindromes should still come out scrambled
@@ -16,13 +18,10 @@
 - [X] Make restart button reset game
 - [X] Submit answer by pressing ENTER
 - [X] Fix horizontal stack
-- [ ] Different color for button when armed
 - [ ] Add more challenges
 - [ ] Get new GIF for the preview
 - [ ] Get a logo for the app
-- [ ] Add difficulty levels
-- [ ] Optimize word scramble algorithm
-- [ ] Display game statistics in GAME OVER scene
+- [ ] Game Over screeens
   - [ ] FLAWLESS VICTORY
     - [ ] Total time
     - [ ] Word that took you the longest time to solve (max)
@@ -40,4 +39,9 @@
   - [ ] EPIC LOSS
     - [ ] Total time
     - [ ] Present user with word that defeated them
-    - [ ] 
+
+
+### Version 2
+- [ ] Add difficulty levels
+- [ ] Optimize word scramble algorithm
+- [ ] Different color for button when armed
