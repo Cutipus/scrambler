@@ -21,9 +21,7 @@ public sealed interface PlayResult {
                         WordStat wordThatTookShortest) implements PlayResult {
         }
 
-        public static record EpicDefeat(
-                        Duration totalTime,
-                        WordStat wordThatDefeatedPlayer) implements PlayResult {
+        public static record EpicDefeat(WordStat wordThatDefeatedPlayer) implements PlayResult {
         }
 
         public static record Right(String nextChallenge) implements PlayResult {

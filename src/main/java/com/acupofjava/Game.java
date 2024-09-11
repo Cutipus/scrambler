@@ -10,14 +10,20 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.ArrayList;
 
 public class Game {
     List<String> words;
     Iterator<ScrambleOption> challenges;
     ScrambleOption currentScrambleOption;
     Hitpoints hp;
+
     boolean isFirstWord = true;
-    long startTimeMS = System.currentTimeMillis();
+    final long startTimeMS = System.currentTimeMillis();
+
+    long currentChallengeStartTimeMS = startTimeMS;
+    private int hpLostThisWord;
+    List<WordStat> completedChallenges = new ArrayList<>();
 
     public Game(List<String> words, Hitpoints hp) {
         this.words = words;
@@ -46,37 +52,50 @@ public class Game {
     public PlayResult play(String userGuess) {
         long endTimeMS = System.currentTimeMillis();
         Duration durationSinceStartOfGame = Duration.ofMillis(endTimeMS - startTimeMS);
+        Duration durationSinceStartOfLastChallenge = Duration.ofMillis(endTimeMS - currentChallengeStartTimeMS);
+
         if (currentScrambleOption.matches(userGuess)) {
             if (challenges.hasNext()) {
+                completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
+                currentChallengeStartTimeMS = System.currentTimeMillis();
                 currentScrambleOption = challenges.next();
                 isFirstWord = false;
                 return new PlayResult.Right(generateScramble());
             } else {
                 if (hp.getCurrentHP() == hp.getStartingHP()) {
+                    completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
+                    currentChallengeStartTimeMS = System.currentTimeMillis();
                     return new PlayResult.FlawlessVictory(
                             durationSinceStartOfGame,
-                            null,
-                            null);
+                            completedChallenges.stream().max(WordStat::compareTo).get(),
+                            completedChallenges.stream().min(WordStat::compareTo).get());
                 } else {
+                    completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
+                    currentChallengeStartTimeMS = System.currentTimeMillis();
                     return new PlayResult.Victory(
                             durationSinceStartOfGame,
-                            null,
-                            null);
+                            completedChallenges.stream().max(WordStat::compareTo).get(),
+                            completedChallenges.stream().min(WordStat::compareTo).get());
                 }
             }
         } else {
             if (hp.hit()) {
+                // DOESNT ADD TO COMPLETED CHALLENGES because the challenge hasn't compeleted!
+                hpLostThisWord += 1;
                 return new PlayResult.Wrong(hp.getCurrentHP());
             } else {
+                hpLostThisWord += 1;
                 if (isFirstWord) {
-                    return new PlayResult.EpicDefeat(
-                            durationSinceStartOfGame,
-                            null);
+                    completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
+                    currentChallengeStartTimeMS = System.currentTimeMillis();
+                    return new PlayResult.EpicDefeat(completedChallenges.getFirst());
                 } else {
+                    completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
+                    currentChallengeStartTimeMS = System.currentTimeMillis();
                     return new PlayResult.Defeat(
                             durationSinceStartOfGame,
-                            null,
-                            null);
+                            completedChallenges.stream().max(WordStat::compareTo).get(),
+                            completedChallenges.stream().min(WordStat::compareTo).get());
                 }
             }
         }

@@ -163,8 +163,8 @@ public class UILogic {
                 changeScreen(gameOverScreen);
             }
 
-            case PlayResult.EpicDefeat(Duration totalTime, WordStat wordThatDefeatedPlayer) -> {
-                System.out.println("Player EPICLY DEFEATED, it took " + totalTime.toSeconds() + " seconds");
+            case PlayResult.EpicDefeat(WordStat wordThatDefeatedPlayer) -> {
+                System.out.println("Player EPICLY DEFEATED: " + wordThatDefeatedPlayer);
                 changeScreen(gameOverScreen);
             }
 
