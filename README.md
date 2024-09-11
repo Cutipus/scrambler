@@ -17,6 +17,8 @@
 - [X] Submit answer by pressing ENTER
 - [X] Fix horizontal stack
 - [ ] Different color for button when armed
+- [ ] Add more challenges
+- [ ] Get new GIF for the preview
 - [ ] Get a logo for the app
 - [ ] Add difficulty levels
 - [ ] Optimize word scramble algorithm
@@ -38,4 +40,4 @@
   - [ ] EPIC LOSS
     - [ ] Total time
     - [ ] Present user with word that defeated them
-      - [ ] 
+    - [ ] 
