@@ -200,45 +200,43 @@ class VictoryScreen {
     private static final Color SUNSET_RED = Color.decode("#c91853");
     private static final Color SUNSET_RED_PURPLE = Color.decode("#a8186e");
     private static final Color SUNSET_BLUE = Color.decode("#301d7d");
-    @SuppressWarnings("unused")
-    private static final Color DARKER_BLUE = Color.decode("#222B35");
-    @SuppressWarnings("unused")
-    private static final Color STEEL_BLUE = Color.decode("#8497B0");
+
+    private UILogic uiLogic;
     int hpLeft;
     WordStat longestTimeTaken;
     WordStat shortestTimeTaken;
-    Container victoryScreen =
+
+    JLabel heartsRemaining = Comps.createLabel(NEON_PURPLE, "you had x hearts remaining", 15);
+    JLabel longest = Comps.createLabel(NEON_PURPLE, "it took you this much to finish", 15);
+    JLabel shortest = Comps.createLabel(NEON_PURPLE, "this was your best word: carrion", 15);
+
+    Container victoryScreen = Comps.createScreen(SUNSET_YELLOW, SUNSET_RED, Comps.stackVertically(
+            Comps.createLabel(SUNSET_RED_PURPLE, "Victory", 40),
+            Box.createRigidArea(new Dimension(0, 30)),
+            heartsRemaining,
+            longest,
+            shortest,
+            Box.createRigidArea(new Dimension(0, 30)),
+            Comps.createButton(
+                    SUNSET_ORANGE,
+                    SUNSET_RED,
+                    SUNSET_BLUE,
+                    "Restart",
+                    e -> uiLogic.onRestartActionPressed()),
+            Box.createRigidArea(new Dimension(0, 30)),
+            Comps.createButton(
+                    SUNSET_ORANGE,
+                    SUNSET_RED,
+                    SUNSET_BLUE,
+                    "Quit",
+                    e -> uiLogic.onQuitActionPressed())));
 
     public VictoryScreen(UILogic uiLogic) {
-
+        this.uiLogic = uiLogic;
     }
 
-    public void getVictoryScreen(int hpLeft, WordStat longestTimeTaken, WordStat shortestTimeTaken) {
-        this.hpLeft = hpLeft;
-        this.longestTimeTaken = longestTimeTaken;
-        this.shortestTimeTaken = shortestTimeTaken;
-        Comps.createScreen(SUNSET_YELLOW, SUNSET_RED, Comps.stackVertically(
-                Comps.createLabel(SUNSET_RED_PURPLE, "Victory", 40),
-                Box.createRigidArea(new Dimension(0, 30)),
-                Comps.createLabel(NEON_PURPLE, "you had x hearts remaining", 15),
-                Comps.createLabel(NEON_PURPLE, "it took you this much to finish", 15),
-                Comps.createLabel(NEON_PURPLE, "this was your best word: carrion", 15),
-                Box.createRigidArea(new Dimension(0, 30)),
-                Comps.createButton(
-                        SUNSET_ORANGE,
-                        SUNSET_RED,
-                        SUNSET_BLUE,
-                        "Restart",
-                        e -> onRestartActionPressed()),
-                Box.createRigidArea(new Dimension(0, 30)),
-                Comps.createButton(
-                        SUNSET_ORANGE,
-                        SUNSET_RED,
-                        SUNSET_BLUE,
-                        "Quit",
-                        e -> onQuitActionPressed())));
-
-        currentScreen = gameScreen;
-        frame.add(currentScreen);
+    public Container getVictoryScreen() {
+        return victoryScreen;
     }
+
 }
