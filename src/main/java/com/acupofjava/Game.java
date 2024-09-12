@@ -74,6 +74,7 @@ public class Game {
                     completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
                     currentChallengeStartTimeMS = System.currentTimeMillis();
                     return new PlayResult.Victory(
+                            hp.getCurrentHP(),
                             durationSinceStartOfGame,
                             completedChallenges.stream().max(WordStat::compareTo).get(),
                             completedChallenges.stream().min(WordStat::compareTo).get());

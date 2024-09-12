@@ -29,6 +29,7 @@
   - [ ] VICTORY
     - [ ] Total time
     - [ ] Word that took you the longest time to solve (max)
+      - [ ] Does not reset timer
     - [ ] Word that took you the shortest time to solve (min)
     - [ ] HP lost per incorrect guess
   - [ ] LOSE

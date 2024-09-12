@@ -4,6 +4,7 @@ import java.time.Duration;
 
 public sealed interface PlayResult {
         public static record Victory(
+                        int hpLeft,
                         Duration totalTime,
                         WordStat wordThatTookLongest,
                         WordStat wordThatTookShortest) implements PlayResult {
