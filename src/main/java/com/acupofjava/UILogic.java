@@ -21,27 +21,19 @@ public class UILogic {
     private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
     private static final Color SUNSET_BLUE = Color.decode("#301d7d");
     private static final Color DARK_BLUE = Color.decode("#303D4A");
-    @SuppressWarnings("unused")
     private static final Color DARKER_BLUE = Color.decode("#222B35");
-    @SuppressWarnings("unused")
     private static final Color STEEL_BLUE = Color.decode("#8497B0");
 
     Game game;
-
     JFrame frame;
-    Box healthDisplay;
-    JTextField userInput;
-    JLabel challengeWordLabel;
+    Container currentScreen;
 
     Container gameOverScreen;
     GameScreen gameScreen = new GameScreen(this);
     VictoryScreen victoryScreen = new VictoryScreen(this);
-    Container currentScreen;
 
     public UILogic(Game game) {
         this.game = game;
-        healthDisplay = Comps.createHealthDisplay(game.getHP());
-        challengeWordLabel = Comps.createLabel(Color.RED.darker().darker(), game.scrambleWord(), 40);
         frame = Comps.createFrame();
 
         gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
@@ -61,25 +53,9 @@ public class UILogic {
                                 "Quit",
                                 e -> onQuitActionPressed()))));
 
-
+        gameScreen.update(game.getHP(), game.scrambleWord());
         currentScreen = gameScreen.getScreen();
         frame.add(currentScreen);
-
-        userInput.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyChar() == '\n')
-                    onSubmitActionPressed();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-        });
     }
 
     void onQuitActionPressed() {
@@ -92,22 +68,18 @@ public class UILogic {
         changeScreen(gameScreen.getScreen());
     }
 
-    void onSubmitActionPressed() {
-        String userGuess = userInput.getText();
+    void onSubmitActionPressed(String userGuess) {
         PlayResult playResult = game.play(userGuess);
         switch (playResult) {
             case PlayResult.Wrong(int hpLeft) -> {
                 System.out.println("Player was wrong, " + hpLeft);
-                for (int i = 0; i < healthDisplay.getComponents().length - hpLeft; i++) {
-                    healthDisplay.remove(0);
-                }
-                healthDisplay.repaint();
+                gameScreen.update(hpLeft);
                 frame.pack();
             }
 
             case PlayResult.Right(String nextChallenge) -> {
                 System.out.println("Player was right, " + nextChallenge);
-                challengeWordLabel.setText(nextChallenge);
+                gameScreen.setChallengeWord(nextChallenge);
             }
 
             case PlayResult.Defeat(Duration totalTime, WordStat longest, WordStat shortest) -> {
@@ -192,9 +164,9 @@ class VictoryScreen {
     public void update(int hpLeft, Duration timeTaken, WordStat longestTimeTaken, WordStat shortestTimeTaken) {
         heartsRemaining.setText(String.format("you had %d hearts remaining", hpLeft));
         longest.setText(String.format("Longest: %d:%02d to finish",
-                longestTimeTaken.timeTaken().toMinutesPart(),longestTimeTaken.timeTaken().toSecondsPart()));
+                longestTimeTaken.timeTaken().toMinutesPart(), longestTimeTaken.timeTaken().toSecondsPart()));
         shortest.setText(String.format("Shortest: %d:%02d to finish",
-                shortestTimeTaken.timeTaken().toMinutesPart(),shortestTimeTaken.timeTaken().toSecondsPart()));
+                shortestTimeTaken.timeTaken().toMinutesPart(), shortestTimeTaken.timeTaken().toSecondsPart()));
     }
 }
 
@@ -203,45 +175,83 @@ class GameScreen {
     private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
     private static final Color DARK_BLUE = Color.decode("#303D4A");
 
-    Box healthDisplay;
+    Box healthDisplay = Comps.createHealthDisplay(0);
     JTextField userInput = Comps.createTextField("");
-    JLabel challengeWordLabel;
+    JLabel challengeWordLabel = Comps.createLabel(Color.RED.darker().darker(), "PLACEHOLDER", 40);;
+
     UILogic uiLogic;
     Container gameScreen = Comps.createScreen(Color.CYAN, Color.MAGENTA, Comps.stackVertically(
-    healthDisplay,
+            healthDisplay,
             Box.createRigidArea(new Dimension(0, 30)),
-    challengeWordLabel,
+            challengeWordLabel,
             Box.createRigidArea(new Dimension(0, 30)),
             Comps.stackHorizontally(
-    userInput,
-            Box.createRigidArea(new Dimension(15, 0)),
-            Comps.createButton(
-    DARK_BLUE,
-    Color.MAGENTA,
-    Color.BLACK,
-            "Submit",
-    e -> uiLogic.onSubmitActionPressed())),
+                    userInput,
+                    Box.createRigidArea(new Dimension(15, 0)),
+                    Comps.createButton(
+                            DARK_BLUE,
+                            Color.MAGENTA,
+                            Color.BLACK,
+                            "Submit",
+                            e -> uiLogic.onSubmitActionPressed(userInput.getText()))),
             Box.createRigidArea(new Dimension(0, 30)),
             Comps.createButton(
-    DARK_BLUE,
-    Color.MAGENTA,
-    SUNSET_PURPLE,
-            "Quit",
-    e -> uiLogic.onQuitActionPressed())));
+                    DARK_BLUE,
+                    Color.MAGENTA,
+                    SUNSET_PURPLE,
+                    "Quit",
+                    e -> uiLogic.onQuitActionPressed())));
 
     public GameScreen(UILogic uiLogic) {
         this.uiLogic = uiLogic;
+        userInput.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == '\n') {
+                    uiLogic.onSubmitActionPressed(userInput.getText());
+                    userInput.setText("");
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
     }
 
-    public void update(int hp, String challengeWord) {
-        challengeWordLabel.setText(challengeWord);
-        int HPToBeAdded = hp - healthDisplay.getComponents().length;
-        for (int i = 0; i < HPToBeAdded; i++) {
-            healthDisplay.add((Comps.createHeart()));
-        }
+    public void setChallengeWord(String nextChallenge) {
+        challengeWordLabel.setText(nextChallenge);
     }
 
     public Container getScreen() {
         return gameScreen;
+    }
+
+    public void update(int hp, String challengeWord) {
+        challengeWordLabel.setText(challengeWord);
+        updateHP(hp);
+        healthDisplay.repaint();
+    }
+
+    public void update(int hpLeft) {
+        updateHP(hpLeft);
+    }
+
+    private void updateHP(int targetHP) {
+        int hpDifference = targetHP - healthDisplay.getComponents().length;
+        if (hpDifference > 0) {
+            for (int i = hpDifference; i > 0; i--) {
+                healthDisplay.add((Comps.createHeart()));
+            }
+        } else if (hpDifference < 0) {
+            for (int i = hpDifference; i < 0; i++) {
+                healthDisplay.remove(0);
+            }
+        } else {
+        }
     }
 }
