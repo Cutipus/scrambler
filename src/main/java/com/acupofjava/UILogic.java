@@ -34,39 +34,15 @@ public class UILogic {
     JLabel challengeWordLabel;
 
     Container gameOverScreen;
-    Container gameScreen;
+    GameScreen gameScreen = new GameScreen(this);
     VictoryScreen victoryScreen = new VictoryScreen(this);
     Container currentScreen;
 
     public UILogic(Game game) {
         this.game = game;
         healthDisplay = Comps.createHealthDisplay(game.getHP());
-        challengeWordLabel = Comps.createLabel(Color.RED.darker().darker(), game.generateScramble(), 40);
-        userInput = Comps.createTextField("");
+        challengeWordLabel = Comps.createLabel(Color.RED.darker().darker(), game.scrambleWord(), 40);
         frame = Comps.createFrame();
-        userInput = Comps.createTextField("");
-
-        gameScreen = Comps.createScreen(Color.CYAN, Color.MAGENTA, Comps.stackVertically(
-                healthDisplay,
-                Box.createRigidArea(new Dimension(0, 30)),
-                challengeWordLabel,
-                Box.createRigidArea(new Dimension(0, 30)),
-                Comps.stackHorizontally(
-                        userInput,
-                        Box.createRigidArea(new Dimension(15, 0)),
-                        Comps.createButton(
-                                DARK_BLUE,
-                                Color.MAGENTA,
-                                Color.BLACK,
-                                "Submit",
-                                e -> onSubmitActionPressed())),
-                Box.createRigidArea(new Dimension(0, 30)),
-                Comps.createButton(
-                        DARK_BLUE,
-                        Color.MAGENTA,
-                        SUNSET_PURPLE,
-                        "Quit",
-                        e -> onQuitActionPressed())));
 
         gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
                 Comps.createLabel(BRIGHT_ORANGE, "YOU DIED", 40),
@@ -86,7 +62,7 @@ public class UILogic {
                                 e -> onQuitActionPressed()))));
 
 
-        currentScreen = gameScreen;
+        currentScreen = gameScreen.getScreen();
         frame.add(currentScreen);
 
         userInput.addKeyListener(new KeyListener() {
@@ -112,12 +88,8 @@ public class UILogic {
 
     void onRestartActionPressed() {
         game.restart();
-        challengeWordLabel.setText(game.generateScramble());
-        int HPToBeAdded = game.getHP() - healthDisplay.getComponents().length;
-        for (int i = 0; i < HPToBeAdded; i++) {
-            healthDisplay.add((Comps.createHeart()));
-        }
-        changeScreen(gameScreen);
+        gameScreen.update(game.getHP(), game.scrambleWord());
+        changeScreen(gameScreen.getScreen());
     }
 
     void onSubmitActionPressed() {
@@ -151,12 +123,12 @@ public class UILogic {
             case PlayResult.Victory(int hpLeft, Duration totalTime, WordStat longest, WordStat shortest) -> {
                 System.out.println("Player WON, it took " + totalTime.toSeconds() + " seconds");
                 victoryScreen.update(hpLeft, totalTime, longest, shortest);
-                changeScreen(victoryScreen.getVictoryScreen());
+                changeScreen(victoryScreen.getScreen());
             }
 
             case PlayResult.FlawlessVictory(Duration totalTime, WordStat longest, WordStat shortest) -> {
                 System.out.println("Player WON SPECTACULARLY, it took " + totalTime.toSeconds() + " seconds");
-                changeScreen(victoryScreen.getVictoryScreen());
+                changeScreen(victoryScreen.getScreen());
             }
         }
     }
@@ -213,7 +185,7 @@ class VictoryScreen {
         this.uiLogic = uiLogic;
     }
 
-    public Container getVictoryScreen() {
+    public Container getScreen() {
         return victoryScreen;
     }
 
@@ -224,5 +196,52 @@ class VictoryScreen {
         shortest.setText(String.format("Shortest: %d:%02d to finish",
                 shortestTimeTaken.timeTaken().toMinutesPart(),shortestTimeTaken.timeTaken().toSecondsPart()));
     }
-    // [word][timetaken][hplost]
+}
+
+class GameScreen {
+
+    private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
+    private static final Color DARK_BLUE = Color.decode("#303D4A");
+
+    Box healthDisplay;
+    JTextField userInput = Comps.createTextField("");
+    JLabel challengeWordLabel;
+    UILogic uiLogic;
+    Container gameScreen = Comps.createScreen(Color.CYAN, Color.MAGENTA, Comps.stackVertically(
+    healthDisplay,
+            Box.createRigidArea(new Dimension(0, 30)),
+    challengeWordLabel,
+            Box.createRigidArea(new Dimension(0, 30)),
+            Comps.stackHorizontally(
+    userInput,
+            Box.createRigidArea(new Dimension(15, 0)),
+            Comps.createButton(
+    DARK_BLUE,
+    Color.MAGENTA,
+    Color.BLACK,
+            "Submit",
+    e -> uiLogic.onSubmitActionPressed())),
+            Box.createRigidArea(new Dimension(0, 30)),
+            Comps.createButton(
+    DARK_BLUE,
+    Color.MAGENTA,
+    SUNSET_PURPLE,
+            "Quit",
+    e -> uiLogic.onQuitActionPressed())));
+
+    public GameScreen(UILogic uiLogic) {
+        this.uiLogic = uiLogic;
+    }
+
+    public void update(int hp, String challengeWord) {
+        challengeWordLabel.setText(challengeWord);
+        int HPToBeAdded = hp - healthDisplay.getComponents().length;
+        for (int i = 0; i < HPToBeAdded; i++) {
+            healthDisplay.add((Comps.createHeart()));
+        }
+    }
+
+    public Container getScreen() {
+        return gameScreen;
+    }
 }

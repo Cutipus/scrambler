@@ -41,7 +41,7 @@ public class Game {
         this(words, new Hitpoints(hp));
     }
 
-    public String generateScramble() {
+    public String scrambleWord() {
         return currentScrambleOption.scramble((int) (Math.random() * Integer.MAX_VALUE));
     }
 
@@ -61,7 +61,7 @@ public class Game {
                 currentChallengeStartTimeMS = System.currentTimeMillis();
                 currentScrambleOption = challenges.next();
                 isFirstWord = false;
-                return new PlayResult.Right(generateScramble());
+                return new PlayResult.Right(scrambleWord());
             } else {
                 if (hp.getCurrentHP() == hp.getStartingHP()) {
                     completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
