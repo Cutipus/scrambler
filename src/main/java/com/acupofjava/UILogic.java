@@ -11,47 +11,33 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class UILogic {
-    private static final Color BRIGHT_ORANGE = Color.decode("#ffac00");
-    private static final Color OXBLOOD_RED = Color.decode("#4A0000");
-    private static final Color NEON_PURPLE = Color.decode("#BC13FE");
-    private static final Color SUNSET_YELLOW = Color.decode("#ffbf15");
-    private static final Color SUNSET_ORANGE = Color.decode("#f2541B");
-    private static final Color SUNSET_RED = Color.decode("#c91853");
-    private static final Color SUNSET_RED_PURPLE = Color.decode("#a8186e");
-    private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
-    private static final Color SUNSET_BLUE = Color.decode("#301d7d");
-    private static final Color DARK_BLUE = Color.decode("#303D4A");
-    private static final Color DARKER_BLUE = Color.decode("#222B35");
-    private static final Color STEEL_BLUE = Color.decode("#8497B0");
 
-    Game game;
-    JFrame frame;
-    Container currentScreen;
+    private final Game game;
+    private final JFrame frame = Comps.createFrame();;
 
-    GameOverScreen gameOverScreen = new GameOverScreen(this);
-    GameScreen gameScreen = new GameScreen(this);
-    VictoryScreen victoryScreen = new VictoryScreen(this);
+    private Container currentScreen;
+    private final GameOverScreen gameOverScreen = new GameOverScreen(this);
+    private final GameScreen gameScreen = new GameScreen(this);
+    private final VictoryScreen victoryScreen = new VictoryScreen(this);
 
     public UILogic(Game game) {
         this.game = game;
-        frame = Comps.createFrame();
-
         gameScreen.update(game.getHP(), game.scrambleWord());
         currentScreen = gameScreen.getScreen();
         frame.add(currentScreen);
     }
 
-    void onQuitActionPressed() {
+    public void onQuitActionPressed() {
         System.exit(0);
     }
 
-    void onRestartActionPressed() {
+    public void onRestartActionPressed() {
         game.restart();
         gameScreen.update(game.getHP(), game.scrambleWord());
         changeScreen(gameScreen.getScreen());
     }
 
-    void onSubmitActionPressed(String userGuess) {
+    public void onSubmitActionPressed(String userGuess) {
         PlayResult playResult = game.play(userGuess);
         switch (playResult) {
             case PlayResult.Wrong(int hpLeft) -> {
