@@ -269,6 +269,7 @@ class FlawlessVictoryScreen {
     }
 
     public void update(Duration totalTime, WordStat wordThatTookLongest, WordStat wordThatTookShortest) {
+        // TODO: utilize totalTime!!!
         longest.setText(String.format("Longest: %d:%02d to finish",
                 wordThatTookLongest.timeTaken().toMinutesPart(), wordThatTookLongest.timeTaken().toSecondsPart()));
         shortest.setText(String.format("Shortest: %d:%02d to finish",
@@ -309,6 +310,7 @@ class GameOverScreen {
     }
 
     public void update(Duration totalTime, WordStat wordThatTookLongest, WordStat wordThatTookShortest) {
+        // TODO: isn't actually doing anything with this data! DISPLAY IT!
     }
 }
 
