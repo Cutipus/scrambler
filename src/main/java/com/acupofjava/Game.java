@@ -24,6 +24,7 @@ public class Game {
     long currentChallengeStartTimeMS = startTimeMS;
     private int hpLostThisWord;
     List<WordStat> completedChallenges = new ArrayList<>();
+    private String lastScrambledWord;
 
     public Game(List<String> words, Hitpoints hp) {
         this.words = words;
@@ -42,7 +43,8 @@ public class Game {
     }
 
     public String scrambleWord() {
-        return currentScrambleOption.scramble((int) (Math.random() * Integer.MAX_VALUE));
+        lastScrambledWord = currentScrambleOption.scramble((int) (Math.random() * Integer.MAX_VALUE));
+        return lastScrambledWord;
     }
 
     public int getHP() {
@@ -88,7 +90,8 @@ public class Game {
             } else {
                 hpLostThisWord += 1;
                 if (isFirstWord) {
-                    completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
+                    completedChallenges
+                            .add(new WordStat(lastScrambledWord, durationSinceStartOfLastChallenge, hpLostThisWord));
                     currentChallengeStartTimeMS = System.currentTimeMillis();
                     return new PlayResult.EpicDefeat(completedChallenges.getFirst());
                 } else {
@@ -139,6 +142,7 @@ public class Game {
     public void restart() {
         hp.resetHP();
         resetIterator();
+        completedChallenges.clear();
 
         if (challenges.hasNext())
             currentScrambleOption = challenges.next();
