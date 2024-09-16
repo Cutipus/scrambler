@@ -19,6 +19,8 @@ public class UILogic {
     private final GameOverScreen gameOverScreen = new GameOverScreen(this);
     private final GameScreen gameScreen = new GameScreen(this);
     private final VictoryScreen victoryScreen = new VictoryScreen(this);
+    private final FlawlessVictoryScreen flawlessVictoryScreen = new FlawlessVictoryScreen(this);
+    private final EpicDefeatScreen epicDefeatScreen = new EpicDefeatScreen(this);
 
     public UILogic(Game game) {
         this.game = game;
@@ -58,7 +60,8 @@ public class UILogic {
 
             case PlayResult.EpicDefeat(WordStat wordThatDefeatedPlayer) -> {
                 System.out.println("Player EPICLY DEFEATED: " + wordThatDefeatedPlayer);
-                changeScreen(gameOverScreen.getScreen());
+                epicDefeatScreen.update(wordThatDefeatedPlayer);
+                changeScreen(epicDefeatScreen.getScreen());
             }
 
             case PlayResult.Victory(int hpLeft, Duration totalTime, WordStat longest, WordStat shortest) -> {
@@ -69,7 +72,8 @@ public class UILogic {
 
             case PlayResult.FlawlessVictory(Duration totalTime, WordStat longest, WordStat shortest) -> {
                 System.out.println("Player WON SPECTACULARLY, it took " + totalTime.toSeconds() + " seconds");
-                changeScreen(victoryScreen.getScreen());
+                flawlessVictoryScreen.update(totalTime, longest, shortest);
+                changeScreen(flawlessVictoryScreen.getScreen());
             }
         }
     }
@@ -87,60 +91,7 @@ public class UILogic {
     }
 }
 
-class VictoryScreen {
-    private static final Color NEON_PURPLE = Color.decode("#BC13FE");
-    private static final Color SUNSET_YELLOW = Color.decode("#ffbf15");
-    private static final Color SUNSET_ORANGE = Color.decode("#f2541B");
-    private static final Color SUNSET_RED = Color.decode("#c91853");
-    private static final Color SUNSET_RED_PURPLE = Color.decode("#a8186e");
-    private static final Color SUNSET_BLUE = Color.decode("#301d7d");
-
-    private UILogic uiLogic;
-
-    JLabel heartsRemaining = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-    JLabel longest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-    JLabel shortest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-
-    Container victoryScreen = Comps.createScreen(SUNSET_YELLOW, SUNSET_RED, Comps.stackVertically(
-            Comps.createLabel(SUNSET_RED_PURPLE, "Victory", 40),
-            Box.createRigidArea(new Dimension(0, 30)),
-            heartsRemaining,
-            longest,
-            shortest,
-            Box.createRigidArea(new Dimension(0, 30)),
-            Comps.createButton(
-                    SUNSET_ORANGE,
-                    SUNSET_RED,
-                    SUNSET_BLUE,
-                    "Restart",
-                    e -> uiLogic.onRestartActionPressed()),
-            Box.createRigidArea(new Dimension(0, 30)),
-            Comps.createButton(
-                    SUNSET_ORANGE,
-                    SUNSET_RED,
-                    SUNSET_BLUE,
-                    "Quit",
-                    e -> uiLogic.onQuitActionPressed())));
-
-    public VictoryScreen(UILogic uiLogic) {
-        this.uiLogic = uiLogic;
-    }
-
-    public Container getScreen() {
-        return victoryScreen;
-    }
-
-    public void update(int hpLeft, Duration timeTaken, WordStat longestTimeTaken, WordStat shortestTimeTaken) {
-        heartsRemaining.setText(String.format("you had %d hearts remaining", hpLeft));
-        longest.setText(String.format("Longest: %d:%02d to finish",
-                longestTimeTaken.timeTaken().toMinutesPart(), longestTimeTaken.timeTaken().toSecondsPart()));
-        shortest.setText(String.format("Shortest: %d:%02d to finish",
-                shortestTimeTaken.timeTaken().toMinutesPart(), shortestTimeTaken.timeTaken().toSecondsPart()));
-    }
-}
-
 class GameScreen {
-
     private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
     private static final Color DARK_BLUE = Color.decode("#303D4A");
 
@@ -225,6 +176,106 @@ class GameScreen {
     }
 }
 
+class VictoryScreen {
+    private static final Color NEON_PURPLE = Color.decode("#BC13FE");
+    private static final Color SUNSET_YELLOW = Color.decode("#ffbf15");
+    private static final Color SUNSET_ORANGE = Color.decode("#f2541B");
+    private static final Color SUNSET_RED = Color.decode("#c91853");
+    private static final Color SUNSET_RED_PURPLE = Color.decode("#a8186e");
+    private static final Color SUNSET_BLUE = Color.decode("#301d7d");
+
+    private UILogic uiLogic;
+
+    JLabel heartsRemaining = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    JLabel longest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    JLabel shortest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+
+    Container victoryScreen = Comps.createScreen(SUNSET_YELLOW, SUNSET_RED, Comps.stackVertically(
+            Comps.createLabel(SUNSET_RED_PURPLE, "Victory", 40),
+            Box.createRigidArea(new Dimension(0, 30)),
+            heartsRemaining,
+            longest,
+            shortest,
+            Box.createRigidArea(new Dimension(0, 30)),
+            Comps.createButton(
+                    SUNSET_ORANGE,
+                    SUNSET_RED,
+                    SUNSET_BLUE,
+                    "Restart",
+                    e -> uiLogic.onRestartActionPressed()),
+            Box.createRigidArea(new Dimension(0, 30)),
+            Comps.createButton(
+                    SUNSET_ORANGE,
+                    SUNSET_RED,
+                    SUNSET_BLUE,
+                    "Quit",
+                    e -> uiLogic.onQuitActionPressed())));
+
+    public VictoryScreen(UILogic uiLogic) {
+        this.uiLogic = uiLogic;
+    }
+
+    public Container getScreen() {
+        return victoryScreen;
+    }
+
+    public void update(int hpLeft, Duration timeTaken, WordStat longestTimeTaken, WordStat shortestTimeTaken) {
+        heartsRemaining.setText(String.format("you had %d hearts remaining", hpLeft));
+        longest.setText(String.format("Longest: %d:%02d to finish",
+                longestTimeTaken.timeTaken().toMinutesPart(), longestTimeTaken.timeTaken().toSecondsPart()));
+        shortest.setText(String.format("Shortest: %d:%02d to finish",
+                shortestTimeTaken.timeTaken().toMinutesPart(), shortestTimeTaken.timeTaken().toSecondsPart()));
+    }
+}
+
+class FlawlessVictoryScreen {
+    private static final Color NEON_PURPLE = Color.decode("#BC13FE");
+    private static final Color SOME_GREEN = Color.decode("#32a852");
+    private static final Color SUNSET_ORANGE = Color.decode("#f2541B");
+    private static final Color SUNSET_RED = Color.decode("#c91853");
+    private static final Color SUNSET_RED_PURPLE = Color.decode("#a8186e");
+    private static final Color SUNSET_BLUE = Color.decode("#301d7d");
+
+    private JLabel longest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    private JLabel shortest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+
+    UILogic uiLogic;
+    Container flawlessVictoryContainer = Comps.createScreen(SOME_GREEN, SUNSET_RED, Comps.stackVertically(
+            Comps.createLabel(SUNSET_RED_PURPLE, "FLAWLESS Victory", 40),
+            Box.createRigidArea(new Dimension(0, 30)),
+            longest,
+            shortest,
+            Box.createRigidArea(new Dimension(0, 30)),
+            Comps.createButton(
+                    SUNSET_ORANGE,
+                    SUNSET_RED,
+                    SUNSET_BLUE,
+                    "Restart",
+                    e -> uiLogic.onRestartActionPressed()),
+            Box.createRigidArea(new Dimension(0, 30)),
+            Comps.createButton(
+                    SUNSET_ORANGE,
+                    SUNSET_RED,
+                    SUNSET_BLUE,
+                    "Quit",
+                    e -> uiLogic.onQuitActionPressed())));
+
+    public FlawlessVictoryScreen(UILogic uiLogic) {
+        this.uiLogic = uiLogic;
+    }
+
+    public Container getScreen() {
+        return flawlessVictoryContainer;
+    }
+
+    public void update(Duration totalTime, WordStat wordThatTookLongest, WordStat wordThatTookShortest) {
+        longest.setText(String.format("Longest: %d:%02d to finish",
+                wordThatTookLongest.timeTaken().toMinutesPart(), wordThatTookLongest.timeTaken().toSecondsPart()));
+        shortest.setText(String.format("Shortest: %d:%02d to finish",
+                wordThatTookShortest.timeTaken().toMinutesPart(), wordThatTookShortest.timeTaken().toSecondsPart()));
+    }
+}
+
 class GameOverScreen {
     private static final Color BRIGHT_ORANGE = Color.decode("#ffac00");
     private static final Color OXBLOOD_RED = Color.decode("#4A0000");
@@ -247,7 +298,7 @@ class GameOverScreen {
                             OXBLOOD_RED.darker(),
                             SUNSET_PURPLE,
                             "Quit",
-                            e -> uiLogic.onQuitActionPressed()))));;
+                            e -> uiLogic.onQuitActionPressed()))));
 
     public GameOverScreen(UILogic uiLogic) {
         this.uiLogic = uiLogic;
@@ -255,5 +306,50 @@ class GameOverScreen {
 
     public Container getScreen() {
         return gameOverScreen;
+    }
+
+    public void update(Duration totalTime, WordStat wordThatTookLongest, WordStat wordThatTookShortest) {
+    }
+}
+
+class EpicDefeatScreen {
+    private static final Color BRIGHT_ORANGE = Color.decode("#ffac00");
+    private static final Color OXBLOOD_RED = Color.decode("#4A0000");
+    private static final Color NEON_PURPLE = Color.decode("#BC13FE");
+    private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
+
+    UILogic uiLogic;
+    JLabel wordThatDefeatedPlayerLabel = Comps.createLabel(OXBLOOD_RED, "THIS WORD DEFEATED YOU: ", 25);
+    Container epicDefeatContainer = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
+            Comps.createLabel(BRIGHT_ORANGE, "YOU DIED", 40),
+            wordThatDefeatedPlayerLabel,
+            Comps.stackHorizontally(
+                    Comps.createButton(
+                            BRIGHT_ORANGE.darker(),
+                            BRIGHT_ORANGE.brighter(),
+                            Color.BLACK,
+                            "Restart",
+                            e -> uiLogic.onRestartActionPressed()),
+                    Box.createRigidArea(new Dimension(15, 0)),
+                    Comps.createButton(
+                            NEON_PURPLE.brighter().brighter(),
+                            OXBLOOD_RED.darker(),
+                            SUNSET_PURPLE,
+                            "Quit",
+                            e -> uiLogic.onQuitActionPressed()))));;
+
+    public EpicDefeatScreen(UILogic uiLogic) {
+        this.uiLogic = uiLogic;
+    }
+
+    public Container getScreen() {
+        return epicDefeatContainer;
+    }
+
+    public void update(WordStat wordThatDefeatedPlayer) {
+        wordThatDefeatedPlayerLabel.setText(String.format("'%s' defeated you in %d:%02d time!",
+                wordThatDefeatedPlayer.word(),
+                wordThatDefeatedPlayer.timeTaken().toMinutesPart(),
+                wordThatDefeatedPlayer.timeTaken().toSecondsPart()));
     }
 }
