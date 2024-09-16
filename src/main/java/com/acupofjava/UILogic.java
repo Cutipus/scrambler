@@ -28,30 +28,13 @@ public class UILogic {
     JFrame frame;
     Container currentScreen;
 
-    Container gameOverScreen;
+    GameOverScreen gameOverScreen = new GameOverScreen(this);
     GameScreen gameScreen = new GameScreen(this);
     VictoryScreen victoryScreen = new VictoryScreen(this);
 
     public UILogic(Game game) {
         this.game = game;
         frame = Comps.createFrame();
-
-        gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
-                Comps.createLabel(BRIGHT_ORANGE, "YOU DIED", 40),
-                Comps.stackHorizontally(
-                        Comps.createButton(
-                                BRIGHT_ORANGE.darker(),
-                                BRIGHT_ORANGE.brighter(),
-                                Color.BLACK,
-                                "Restart",
-                                e -> onRestartActionPressed()),
-                        Box.createRigidArea(new Dimension(15, 0)),
-                        Comps.createButton(
-                                NEON_PURPLE.brighter().brighter(),
-                                OXBLOOD_RED.darker(),
-                                SUNSET_PURPLE,
-                                "Quit",
-                                e -> onQuitActionPressed()))));
 
         gameScreen.update(game.getHP(), game.scrambleWord());
         currentScreen = gameScreen.getScreen();
@@ -84,12 +67,12 @@ public class UILogic {
 
             case PlayResult.Defeat(Duration totalTime, WordStat longest, WordStat shortest) -> {
                 System.out.println("Player DEFEATED, it took " + totalTime.toSeconds() + " seconds");
-                changeScreen(gameOverScreen);
+                changeScreen(gameOverScreen.getScreen());
             }
 
             case PlayResult.EpicDefeat(WordStat wordThatDefeatedPlayer) -> {
                 System.out.println("Player EPICLY DEFEATED: " + wordThatDefeatedPlayer);
-                changeScreen(gameOverScreen);
+                changeScreen(gameOverScreen.getScreen());
             }
 
             case PlayResult.Victory(int hpLeft, Duration totalTime, WordStat longest, WordStat shortest) -> {
@@ -253,5 +236,38 @@ class GameScreen {
             }
         } else {
         }
+    }
+}
+
+class GameOverScreen {
+    private static final Color BRIGHT_ORANGE = Color.decode("#ffac00");
+    private static final Color OXBLOOD_RED = Color.decode("#4A0000");
+    private static final Color NEON_PURPLE = Color.decode("#BC13FE");
+    private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
+
+    UILogic uiLogic;
+    Container gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
+            Comps.createLabel(BRIGHT_ORANGE, "YOU DIED", 40),
+            Comps.stackHorizontally(
+                    Comps.createButton(
+                            BRIGHT_ORANGE.darker(),
+                            BRIGHT_ORANGE.brighter(),
+                            Color.BLACK,
+                            "Restart",
+                            e -> uiLogic.onRestartActionPressed()),
+                    Box.createRigidArea(new Dimension(15, 0)),
+                    Comps.createButton(
+                            NEON_PURPLE.brighter().brighter(),
+                            OXBLOOD_RED.darker(),
+                            SUNSET_PURPLE,
+                            "Quit",
+                            e -> uiLogic.onQuitActionPressed()))));;
+
+    public GameOverScreen(UILogic uiLogic) {
+        this.uiLogic = uiLogic;
+    }
+
+    public Container getScreen() {
+        return gameOverScreen;
     }
 }
