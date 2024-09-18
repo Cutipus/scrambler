@@ -21,25 +21,25 @@
 - [ ] Add more challenges
 - [ ] Get new GIF for the preview
 - [ ] Get a logo for the app
-- [ ] Game Over screeens
-  - [ ] FLAWLESS VICTORY
-    - [ ] Total time
-    - [ ] Word that took you the longest time to solve (max)
-    - [ ] Word that took you the shortest time to solve (min)
-  - [ ] VICTORY
-    - [ ] Total time
-    - [ ] Word that took you the longest time to solve (max)
-      - [ ] Does not reset timer
-    - [ ] Word that took you the shortest time to solve (min)
-    - [ ] HP lost per incorrect guess
-  - [ ] LOSE
-    - [ ] Total time
-    - [ ] Word that took you the longest time to solve (max)
-    - [ ] Word that took you the shortest time to solve (min)
-    - [ ] HP lost per incorrect guess
-  - [ ] EPIC LOSS
-    - [ ] Total time
-    - [ ] Present user with word that defeated them
+- [X] Game Over screeens
+  - [X] FLAWLESS VICTORY
+    - [X] Total time
+    - [X] Word that took you the longest time to solve (max)
+    - [X] Word that took you the shortest time to solve (min)
+  - [X] VICTORY
+    - [X] Total time
+    - [X] Word that took you the longest time to solve (max)
+      - [X] Does not reset timer
+    - [X] Word that took you the shortest time to solve (min)
+    - [X] HP lost per incorrect guess
+  - [X] LOSE
+    - [X] Total time
+    - [X] Word that took you the longest time to solve (max)
+    - [X] Word that took you the shortest time to solve (min)
+    - [X] HP lost per incorrect guess
+  - [X] EPIC LOSS
+    - [X] Total time
+    - [X] Present user with word that defeated them
 
 
 ### Version 2

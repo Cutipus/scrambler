@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class UILogic {
-
     private final Game game;
     private final JFrame frame = Comps.createFrame();;
 
@@ -50,11 +49,12 @@ public class UILogic {
 
             case PlayResult.Right(String nextChallenge) -> {
                 System.out.println("Player was right, " + nextChallenge);
-                gameScreen.setChallengeWord(nextChallenge);
+                gameScreen.update(nextChallenge);
             }
 
             case PlayResult.Defeat(Duration totalTime, WordStat longest, WordStat shortest) -> {
                 System.out.println("Player DEFEATED, it took " + totalTime.toSeconds() + " seconds");
+                gameOverScreen.update(totalTime, longest, shortest);
                 changeScreen(gameOverScreen.getScreen());
             }
 
@@ -143,25 +143,21 @@ class GameScreen {
         });
     }
 
-    public void setChallengeWord(String nextChallenge) {
-        challengeWordLabel.setText(nextChallenge);
-    }
-
     public Container getScreen() {
         return gameScreen;
     }
 
     public void update(int hp, String challengeWord) {
         challengeWordLabel.setText(challengeWord);
-        updateHP(hp);
+        update(hp);
         healthDisplay.repaint();
     }
 
-    public void update(int hpLeft) {
-        updateHP(hpLeft);
+    public void update(String nextChallenge) {
+        challengeWordLabel.setText(nextChallenge);
     }
 
-    private void updateHP(int targetHP) {
+    public void update(int targetHP) {
         int hpDifference = targetHP - healthDisplay.getComponents().length;
         if (hpDifference > 0) {
             for (int i = hpDifference; i > 0; i--) {
@@ -187,15 +183,15 @@ class VictoryScreen {
     private UILogic uiLogic;
 
     JLabel heartsRemaining = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-    JLabel longest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-    JLabel shortest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    JLabel longestTimeTakenLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    JLabel shortestTimeTakenLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
 
     Container victoryScreen = Comps.createScreen(SUNSET_YELLOW, SUNSET_RED, Comps.stackVertically(
             Comps.createLabel(SUNSET_RED_PURPLE, "Victory", 40),
             Box.createRigidArea(new Dimension(0, 30)),
             heartsRemaining,
-            longest,
-            shortest,
+            longestTimeTakenLabel,
+            shortestTimeTakenLabel,
             Box.createRigidArea(new Dimension(0, 30)),
             Comps.createButton(
                     SUNSET_ORANGE,
@@ -221,10 +217,18 @@ class VictoryScreen {
 
     public void update(int hpLeft, Duration timeTaken, WordStat longestTimeTaken, WordStat shortestTimeTaken) {
         heartsRemaining.setText(String.format("you had %d hearts remaining", hpLeft));
-        longest.setText(String.format("Longest: %d:%02d to finish",
-                longestTimeTaken.timeTaken().toMinutesPart(), longestTimeTaken.timeTaken().toSecondsPart()));
-        shortest.setText(String.format("Shortest: %d:%02d to finish",
-                shortestTimeTaken.timeTaken().toMinutesPart(), shortestTimeTaken.timeTaken().toSecondsPart()));
+
+        longestTimeTakenLabel.setText(String.format("Longest word was '%s', it took %d:%02d.%04d to finish",
+                longestTimeTaken.word(),
+                longestTimeTaken.timeTaken().toMinutesPart(),
+                longestTimeTaken.timeTaken().toSecondsPart(),
+                longestTimeTaken.timeTaken().toMillisPart()));
+
+        shortestTimeTakenLabel.setText(String.format("Shortest word was '%s', it took %d:%02d.%04d to finish",
+                shortestTimeTaken.word(),
+                shortestTimeTaken.timeTaken().toMinutesPart(),
+                shortestTimeTaken.timeTaken().toSecondsPart(),
+                shortestTimeTaken.timeTaken().toMillisPart()));
     }
 }
 
@@ -236,18 +240,17 @@ class FlawlessVictoryScreen {
     private static final Color SUNSET_RED_PURPLE = Color.decode("#a8186e");
     private static final Color SUNSET_BLUE = Color.decode("#301d7d");
 
-    private JLabel longest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-    private JLabel shortest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-    private JLabel totalTime = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-
+    private JLabel wordThatTookLongestLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    private JLabel wordThatTookShortestLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    private JLabel totalTimeLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
 
     UILogic uiLogic;
     Container flawlessVictoryContainer = Comps.createScreen(SOME_GREEN, SUNSET_RED, Comps.stackVertically(
             Comps.createLabel(SUNSET_RED_PURPLE, "FLAWLESS Victory", 40),
             Box.createRigidArea(new Dimension(0, 30)),
-            totalTime,
-            longest,
-            shortest,
+            totalTimeLabel,
+            wordThatTookLongestLabel,
+            wordThatTookShortestLabel,
             Box.createRigidArea(new Dimension(0, 30)),
             Comps.createButton(
                     SUNSET_ORANGE,
@@ -272,11 +275,20 @@ class FlawlessVictoryScreen {
     }
 
     public void update(Duration totalTime, WordStat wordThatTookLongest, WordStat wordThatTookShortest) {
-        this.totalTime.setText(String.format("Total: %d:%02d time taken", totalTime.toMinutesPart(), totalTime.toSecondsPart()));
-        longest.setText(String.format("Longest: %d:%02d to finish",
-                wordThatTookLongest.timeTaken().toMinutesPart(), wordThatTookLongest.timeTaken().toSecondsPart()));
-        shortest.setText(String.format("Shortest: %d:%02d to finish",
-                wordThatTookShortest.timeTaken().toMinutesPart(), wordThatTookShortest.timeTaken().toSecondsPart()));
+        totalTimeLabel.setText(
+                String.format("Total: %d:%02d time taken", totalTime.toMinutesPart(), totalTime.toSecondsPart()));
+
+        wordThatTookLongestLabel.setText(String.format("Longest word was '%s', it took %d:%02d.%04d to finish",
+                wordThatTookLongest.word(),
+                wordThatTookLongest.timeTaken().toMinutesPart(),
+                wordThatTookLongest.timeTaken().toSecondsPart(),
+                wordThatTookLongest.timeTaken().toMillisPart()));
+
+        wordThatTookShortestLabel.setText(String.format("Shortest word was '%s', it took %d:%02d.%04d to finish",
+                wordThatTookShortest.word(),
+                wordThatTookShortest.timeTaken().toMinutesPart(),
+                wordThatTookShortest.timeTaken().toSecondsPart(),
+                wordThatTookShortest.timeTaken().toMillisPart()));
     }
 }
 
@@ -287,6 +299,11 @@ class GameOverScreen {
     private static final Color SUNSET_PURPLE = Color.decode("#6a0487");
 
     UILogic uiLogic;
+
+    JLabel totalTimeLabel = Comps.createLabel(OXBLOOD_RED, "PLACEHOLDER", 25);
+    JLabel wordThatTookLongestLabel = Comps.createLabel(OXBLOOD_RED, "PLACEHOLDER: ", 25);
+    JLabel wordThatTookShortestLabel = Comps.createLabel(OXBLOOD_RED, "PLACEHOLDER", 25);
+
     Container gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
             Comps.createLabel(BRIGHT_ORANGE, "YOU DIED", 40),
             Comps.stackHorizontally(
@@ -313,7 +330,21 @@ class GameOverScreen {
     }
 
     public void update(Duration totalTime, WordStat wordThatTookLongest, WordStat wordThatTookShortest) {
-        // TODO: isn't actually doing anything with this data! DISPLAY IT!
+        totalTimeLabel.setText(String.format("It took you %d:%02d% to solve everything!",
+                totalTime.toMinutesPart(),
+                totalTime.toSecondsPart()));
+
+        wordThatTookLongestLabel.setText(String.format("Longest word was '%s', it took %d:%02d.%04d to finish",
+                wordThatTookLongest.word(),
+                wordThatTookLongest.timeTaken().toMinutesPart(),
+                wordThatTookLongest.timeTaken().toSecondsPart(),
+                wordThatTookLongest.timeTaken().toMillisPart()));
+
+        wordThatTookShortestLabel.setText(String.format("Shortest word was '%s', it took %d:%02d.%04d to finish",
+                wordThatTookShortest.word(),
+                wordThatTookShortest.timeTaken().toMinutesPart(),
+                wordThatTookShortest.timeTaken().toSecondsPart(),
+                wordThatTookShortest.timeTaken().toMillisPart()));
     }
 }
 
@@ -352,9 +383,10 @@ class EpicDefeatScreen {
     }
 
     public void update(WordStat wordThatDefeatedPlayer) {
-        wordThatDefeatedPlayerLabel.setText(String.format("'%s' defeated you in %d:%02d time!",
+        wordThatDefeatedPlayerLabel.setText(String.format("Longest word was '%s', it took %d:%02d.%04d to finish",
                 wordThatDefeatedPlayer.word(),
                 wordThatDefeatedPlayer.timeTaken().toMinutesPart(),
-                wordThatDefeatedPlayer.timeTaken().toSecondsPart()));
+                wordThatDefeatedPlayer.timeTaken().toSecondsPart(),
+                wordThatDefeatedPlayer.timeTaken().toMillisPart()));
     }
 }
