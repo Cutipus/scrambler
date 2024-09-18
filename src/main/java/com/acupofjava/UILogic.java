@@ -240,9 +240,9 @@ class FlawlessVictoryScreen {
     private static final Color SUNSET_RED_PURPLE = Color.decode("#a8186e");
     private static final Color SUNSET_BLUE = Color.decode("#301d7d");
 
-    private JLabel wordThatTookLongestLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-    private JLabel wordThatTookShortestLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
-    private JLabel totalTimeLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    private final JLabel wordThatTookLongestLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    private final JLabel wordThatTookShortestLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    private final JLabel totalTimeLabel = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
 
     UILogic uiLogic;
     Container flawlessVictoryContainer = Comps.createScreen(SOME_GREEN, SUNSET_RED, Comps.stackVertically(
@@ -305,7 +305,10 @@ class GameOverScreen {
     JLabel wordThatTookShortestLabel = Comps.createLabel(OXBLOOD_RED, "PLACEHOLDER", 25);
 
     Container gameOverScreen = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
+            totalTimeLabel,
             Comps.createLabel(BRIGHT_ORANGE, "YOU DIED", 40),
+            wordThatTookLongestLabel,
+            wordThatTookShortestLabel,
             Comps.stackHorizontally(
                     Comps.createButton(
                             BRIGHT_ORANGE.darker(),
@@ -330,7 +333,7 @@ class GameOverScreen {
     }
 
     public void update(Duration totalTime, WordStat wordThatTookLongest, WordStat wordThatTookShortest) {
-        totalTimeLabel.setText(String.format("It took you %d:%02d% to solve everything!",
+        totalTimeLabel.setText(String.format("It took you %d:%02d to solve everything!",
                 totalTime.toMinutesPart(),
                 totalTime.toSecondsPart()));
 
@@ -356,8 +359,10 @@ class EpicDefeatScreen {
 
     UILogic uiLogic;
     JLabel wordThatDefeatedPlayerLabel = Comps.createLabel(OXBLOOD_RED, "THIS WORD DEFEATED YOU: ", 25);
+    JLabel totalTimeLabel = Comps.createLabel(OXBLOOD_RED, "PLACEHOLDER", 25);
     Container epicDefeatContainer = Comps.createScreen(OXBLOOD_RED, NEON_PURPLE, Comps.stackVertically(
-            Comps.createLabel(BRIGHT_ORANGE, "YOU DIED", 40),
+            totalTimeLabel,
+            Comps.createLabel(BRIGHT_ORANGE, "EPIC DEFEAT", 40),
             wordThatDefeatedPlayerLabel,
             Comps.stackHorizontally(
                     Comps.createButton(
@@ -383,10 +388,11 @@ class EpicDefeatScreen {
     }
 
     public void update(WordStat wordThatDefeatedPlayer) {
-        wordThatDefeatedPlayerLabel.setText(String.format("Longest word was '%s', it took %d:%02d.%04d to finish",
-                wordThatDefeatedPlayer.word(),
+        totalTimeLabel.setText(String.format("Total time taken: %d:%02d.%04d",
                 wordThatDefeatedPlayer.timeTaken().toMinutesPart(),
                 wordThatDefeatedPlayer.timeTaken().toSecondsPart(),
                 wordThatDefeatedPlayer.timeTaken().toMillisPart()));
+        wordThatDefeatedPlayerLabel.setText(String.format("Word that defeated you was '%s'",
+                wordThatDefeatedPlayer.word()));
     }
 }
