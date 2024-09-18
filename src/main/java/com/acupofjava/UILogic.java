@@ -238,11 +238,14 @@ class FlawlessVictoryScreen {
 
     private JLabel longest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
     private JLabel shortest = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+    private JLabel totalTime = Comps.createLabel(NEON_PURPLE, "PLACEHOLDER", 15);
+
 
     UILogic uiLogic;
     Container flawlessVictoryContainer = Comps.createScreen(SOME_GREEN, SUNSET_RED, Comps.stackVertically(
             Comps.createLabel(SUNSET_RED_PURPLE, "FLAWLESS Victory", 40),
             Box.createRigidArea(new Dimension(0, 30)),
+            totalTime,
             longest,
             shortest,
             Box.createRigidArea(new Dimension(0, 30)),
@@ -269,7 +272,7 @@ class FlawlessVictoryScreen {
     }
 
     public void update(Duration totalTime, WordStat wordThatTookLongest, WordStat wordThatTookShortest) {
-        // TODO: utilize totalTime!!!
+        this.totalTime.setText(String.format("Total: %d:%02d time taken", totalTime.toMinutesPart(), totalTime.toSecondsPart()));
         longest.setText(String.format("Longest: %d:%02d to finish",
                 wordThatTookLongest.timeTaken().toMinutesPart(), wordThatTookLongest.timeTaken().toSecondsPart()));
         shortest.setText(String.format("Shortest: %d:%02d to finish",
