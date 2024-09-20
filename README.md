@@ -18,10 +18,6 @@
 - [X] Make restart button reset game
 - [X] Submit answer by pressing ENTER
 - [X] Fix horizontal stack
-- [ ] Add more challenges
-- [ ] Get new GIF for the preview
-- [ ] Get a logo for the app
-- [ ] Improve the look of the various game screens
 - [X] Game Over screens
   - [X] FLAWLESS VICTORY
     - [X] Total time
@@ -41,6 +37,10 @@
   - [X] EPIC LOSS
     - [X] Total time
     - [X] Present user with word that defeated them
+- [ ] Add more challenges
+- [ ] Get new GIF for the preview
+- [ ] Get a logo for the app
+- [ ] Improve the look of the various game screens
 
 
 ### Version 2
