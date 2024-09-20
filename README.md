@@ -21,7 +21,8 @@
 - [ ] Add more challenges
 - [ ] Get new GIF for the preview
 - [ ] Get a logo for the app
-- [X] Game Over screeens
+- [ ] Improve the look of the various game screens
+- [X] Game Over screens
   - [X] FLAWLESS VICTORY
     - [X] Total time
     - [X] Word that took you the longest time to solve (max)
