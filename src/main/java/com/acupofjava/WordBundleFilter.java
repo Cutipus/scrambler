@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 // import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -24,12 +25,15 @@ public class WordBundleFilter {
         @SuppressWarnings("unchecked")
         HashMap<String, List<String>> words = (HashMap<String, List<String>>) parser.parse(reader);
 
-        // find all permutation sets that are larger than 10
+        HashMap<String, List<String>> filteredWord = new HashMap<>();
         for (Entry<String, List<String>> permutaitonEntry : words.entrySet()) {
-            if (permutaitonEntry.getValue().size() > 10) {
-                System.out.println(permutaitonEntry);
+            String key = permutaitonEntry.getKey();
+            List<String> value = permutaitonEntry.getValue();
+            if (key.length() <= 3) {
+                filteredWord.put(key, new ArrayList<>(value));
             }
         }
+
 
         // this is how you find all permutations of a specific word:
 
