@@ -23,8 +23,17 @@ public class WordBundleFilter {
 
         // deserialize
         @SuppressWarnings("unchecked")
-        HashMap<String, List<String>> words = (HashMap<String, List<String>>) parser.parse(reader);
+        HashMap<String, List<String>> JSONWords = (HashMap<String, List<String>>) parser.parse(reader);
+        HashMap<String, List<String>> unCuratedWords = new HashMap<>();
+        HashMap<String, List<String>> curatedWords = new HashMap<>();
+        //TODO save uncuratedWords to file
 
+        JSONWords.forEach((key, value) -> unCuratedWords.put(key,new ArrayList<>(value)));
+
+
+    }
+
+    public void filterWords(HashMap<String, List<String>> JSONWords) {
         HashMap<String, List<String>> easyWords = new HashMap<>();
         int EASY_MINIMUM_KEY_LENGTH = 3;
         int EASY_MAXIMUM_KEY_LENGTH = 4;
@@ -43,7 +52,7 @@ public class WordBundleFilter {
         int HARD_MINIMUM_NUMBER_OF_PERMUTATIONS = 1;
         int HARD_MAXIMUM_NUMBER_OF_PERMUTATIONS = 1;
 
-        for (Entry<String, List<String>> permutaitonEntry : words.entrySet()) {
+        for (Entry<String, List<String>> permutaitonEntry : JSONWords.entrySet()) {
             String key = permutaitonEntry.getKey();
             List<String> value = permutaitonEntry.getValue();
             if (filterBasedOnLevel(permutaitonEntry, EASY_MINIMUM_KEY_LENGTH, EASY_MAXIMUM_KEY_LENGTH, EASY_MINIMUM_NUMBER_OF_PERMUTATIONS, EASY_MAXIMUM_NUMBER_OF_PERMUTATIONS)) {
