@@ -11,15 +11,12 @@ import java.util.*;
 public class WordChooser {
 
     public static void main(String[] args) {
-        final HashMap<String, List<String>> loadedDictionary;
-        try {
-            loadedDictionary = loadDictionary();
-        } catch (IOException | ParseException e) {
-            System.out.println("Can't load dictionary");
-            e.printStackTrace();
+        var loadedDictionary = loadDictionary();
+
+        if (Objects.isNull(loadedDictionary)) {
+            System.err.println("Couldn't load it!");
             return;
         }
-
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -35,11 +32,10 @@ public class WordChooser {
 
             System.out.println(loadedDictionary.get(sortedUserInputWord));
 
-
         }
     }
 
-    public static HashMap<String, List<String>> loadDictionary() throws IOException, ParseException {
+    public static HashMap<String, List<String>> loadDictionary() {
         HashMap<String, List<String>> JSONWords;
         try (
                 InputStream fileInputStream = WordBundleFilter.class.getResourceAsStream("bundled_words.json");
@@ -48,6 +44,9 @@ public class WordChooser {
             @SuppressWarnings("unchecked")
             HashMap<String, List<String>> _JSON = (HashMap<String, List<String>>) parser.parse(reader);
             JSONWords = _JSON;
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+            return null;
         }
 
         // put in temporary hashmap
