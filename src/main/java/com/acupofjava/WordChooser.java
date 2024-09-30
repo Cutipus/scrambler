@@ -11,7 +11,7 @@ import java.util.*;
 public class WordChooser {
 
     public static void main(String[] args) {
-        var loadedDictionary = loadDictionary();
+        HashMap<String, List<String>> loadedDictionary = loadDictionary();
 
         if (Objects.isNull(loadedDictionary)) {
             System.err.println("Couldn't load it!");

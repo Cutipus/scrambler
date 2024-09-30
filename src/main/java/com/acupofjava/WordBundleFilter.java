@@ -9,11 +9,8 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.FileSystems;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Scanner;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -67,7 +64,7 @@ public class WordBundleFilter {
                     FileInputStream inputStream = new FileInputStream(uncuratedFile);
                     ObjectInputStream objInputStream = new ObjectInputStream(inputStream)) {
                 @SuppressWarnings("unchecked")
-                var _loaded = (HashMap<String, List<String>>) objInputStream.readObject();
+                HashMap<String, List<String>> _loaded = (HashMap<String, List<String>>) objInputStream.readObject();
                 loadedUncuratedFile = _loaded;
             }
 
@@ -76,18 +73,20 @@ public class WordBundleFilter {
                     FileInputStream inputStream = new FileInputStream(curatedFile);
                     ObjectInputStream objInputStream = new ObjectInputStream(inputStream)) {
                 @SuppressWarnings("unchecked")
-                var _loaded = (HashMap<String, List<String>>) objInputStream.readObject();
+                HashMap<String, List<String>> _loaded = (HashMap<String, List<String>>) objInputStream.readObject();
                 loadedCuratedFile = _loaded;
             }
 
             HashMap<String, List<String>> uncurated = new HashMap<>(loadedUncuratedFile);
             HashMap<String, List<String>> curated = new HashMap<>(loadedCuratedFile);
+            List<Entry<String, List<String>>> shuffledUncuratedWords = new ArrayList<>(loadedUncuratedFile.entrySet());
+            Collections.shuffle(shuffledUncuratedWords);
+            
+            for (Entry<String, List<String>> entry : shuffledUncuratedWords) {
+                String key = entry.getKey();
+                List<String> words = entry.getValue();
 
-            for (Entry<String, List<String>> entry : loadedUncuratedFile.entrySet()) {
-                var key = entry.getKey();
-                var words = entry.getValue();
-
-                System.out.println(String.format("Save [%s: %s]? Y/N/Q", key, words));
+                System.out.printf("Save [%s: %s]? Y/N/Q%n", key, words);
                 @SuppressWarnings("resource")
                 Scanner inpScanner = new Scanner(System.in);
                 String input = inpScanner.nextLine().toLowerCase();
