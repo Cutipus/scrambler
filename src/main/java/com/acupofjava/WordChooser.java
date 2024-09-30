@@ -9,29 +9,37 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class WordChooser {
-
     public static void main(String[] args) {
         HashMap<String, List<String>> loadedDictionary = loadDictionary();
+        HashMap<String, List<String>> selectedWords = new HashMap<>();
 
         if (Objects.isNull(loadedDictionary)) {
             System.err.println("Couldn't load it!");
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.print("Type word: ");
-            String userInputWord = scanner.nextLine();
-            if (userInputWord.equals("q")) {
-                break;
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
+                System.err.print("Type word: ");
+                String userInputWord;
+                try {
+                    userInputWord = scanner.nextLine();
+                } catch (NoSuchElementException e) {
+                    break;
+                }
+
+                char[] userInputLetters = userInputWord.toCharArray();
+                Arrays.sort(userInputLetters);
+                String sortedUserInputWord = String.valueOf(userInputLetters);
+
+                if (!loadedDictionary.containsKey(sortedUserInputWord)) {
+                    System.err.println("No such word, quitting!");
+                    break;
+                }
+
+                List<String> wordPermutations = loadedDictionary.get(sortedUserInputWord);
+                selectedWords.put(sortedUserInputWord, wordPermutations);
             }
-
-            char[] userInputLetters = userInputWord.toCharArray();
-            Arrays.sort(userInputLetters);
-            String sortedUserInputWord = String.valueOf(userInputLetters);
-
-            System.out.println(loadedDictionary.get(sortedUserInputWord));
-
         }
     }
 
@@ -54,5 +62,4 @@ public class WordChooser {
         JSONWords.forEach((key, value) -> unCuratedWords.put(key, new ArrayList<>(value)));
         return unCuratedWords;
     }
-
 }
