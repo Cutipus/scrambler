@@ -46,7 +46,7 @@ public class WordChooser {
     public static HashMap<String, List<String>> loadDictionary() {
         HashMap<String, List<String>> JSONWords;
         try (
-                InputStream fileInputStream = WordBundleFilter.class.getResourceAsStream("bundled_words.json");
+                InputStream fileInputStream = WordChooser.class.getResourceAsStream("bundled_words.json");
                 InputStreamReader reader = new InputStreamReader(fileInputStream, "UTF-8")) {
             JSONParser parser = new JSONParser();
             @SuppressWarnings("unchecked")
