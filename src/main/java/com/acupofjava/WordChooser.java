@@ -1,20 +1,37 @@
 package com.acupofjava;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.file.FileSystems;
 import java.util.*;
 
 public class WordChooser {
     public static void main(String[] args) {
-        HashMap<String, List<String>> loadedDictionary = loadDictionary();
-        HashMap<String, List<String>> selectedWords = new HashMap<>();
+        File selectedWordsFile = FileSystems.getDefault()
+                .getPath("src", "main", "resources", "com", "acupofjava", "selected_words.json")
+                .toFile();
+        File bundledWordsFile = FileSystems.getDefault()
+                .getPath("src", "main", "resources", "com", "acupofjava", "bundled_words.json")
+                .toFile();
 
-        if (Objects.isNull(loadedDictionary)) {
-            System.err.println("Couldn't load it!");
+        HashMap<String, List<String>> allTheWords = loadJsonFile(bundledWordsFile);
+        HashMap<String, List<String>> selectedWords = loadJsonFile(selectedWordsFile);
+
+        if (Objects.isNull(allTheWords)) {
+            System.err.println("Couldn't load all the words!");
+            return;
+        }
+
+        if (Objects.isNull(selectedWords)) {
+            System.err.println("Couldn't load selected words!");
             return;
         }
 
@@ -28,25 +45,29 @@ public class WordChooser {
                     break;
                 }
 
-                char[] userInputLetters = userInputWord.toCharArray();
-                Arrays.sort(userInputLetters);
-                String sortedUserInputWord = String.valueOf(userInputLetters);
+                String sortedUserInputWord = sortString(userInputWord);
 
-                if (!loadedDictionary.containsKey(sortedUserInputWord)) {
+                if (!allTheWords.containsKey(sortedUserInputWord)) {
                     System.err.println("No such word, quitting!");
                     break;
                 }
 
-                List<String> wordPermutations = loadedDictionary.get(sortedUserInputWord);
-                selectedWords.put(sortedUserInputWord, wordPermutations);
+                selectedWords.put(sortedUserInputWord, allTheWords.get(sortedUserInputWord));
             }
         }
+
+        saveToJsonFile(selectedWords, selectedWordsFile);
     }
 
-    public static HashMap<String, List<String>> loadDictionary() {
+    private static String sortString(String userInputWord) {
+        char[] userInputLetters = userInputWord.toCharArray();
+        Arrays.sort(userInputLetters);
+        return String.valueOf(userInputLetters);
+    }
+
+    public static HashMap<String, List<String>> loadJsonFile(File selectedWordsFile) {
         HashMap<String, List<String>> JSONWords;
-        try (
-                InputStream fileInputStream = WordChooser.class.getResourceAsStream("bundled_words.json");
+        try (FileInputStream fileInputStream = new FileInputStream(selectedWordsFile);
                 InputStreamReader reader = new InputStreamReader(fileInputStream, "UTF-8")) {
             JSONParser parser = new JSONParser();
             @SuppressWarnings("unchecked")
@@ -62,4 +83,15 @@ public class WordChooser {
         JSONWords.forEach((key, value) -> unCuratedWords.put(key, new ArrayList<>(value)));
         return unCuratedWords;
     }
+
+    private static void saveToJsonFile(HashMap<String, List<String>> selectedWords, File selectedWordsFile) {
+        try (FileOutputStream outputStream = new FileOutputStream(selectedWordsFile);
+                OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
+            JSONObject.writeJSONString(selectedWords, writer);
+        } catch (IOException e) {
+            System.err.println("Couldn't write the file! ");
+            e.printStackTrace();
+        }
+    }
+
 }
