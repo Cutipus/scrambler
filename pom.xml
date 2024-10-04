@@ -74,6 +74,31 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.4.1</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>java</goal>
+              </goals>
+            </execution>
+            
+            <execution>
+              <id>chooser</id>
+              <goals>
+                <goal>java</goal>
+              </goals>
+              <configuration>
+                <mainClass>com.acupofjava.WordChooser</mainClass>
+              </configuration>
+            </execution>
+
+          </executions>
+        </plugin>
+
       </plugins>
     </pluginManagement>
   </build>
