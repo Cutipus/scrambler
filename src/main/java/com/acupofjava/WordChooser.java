@@ -48,8 +48,8 @@ public class WordChooser {
                 String sortedUserInputWord = sortString(userInputWord);
 
                 if (!allTheWords.containsKey(sortedUserInputWord)) {
-                    System.err.println("No such word, quitting!");
-                    break;
+                    System.err.println("Couldn't find this word: " + userInputWord);
+                    continue;
                 }
 
                 selectedWords.put(sortedUserInputWord, allTheWords.get(sortedUserInputWord));
