@@ -26,9 +26,9 @@ public class Game {
     List<WordStat> completedChallenges = new ArrayList<>();
     private String lastScrambledWord;
 
-    public Game(List<String> words, Hitpoints hp) {
+    public Game(List<String> words, int hp) {
         this.words = words;
-        this.hp = hp;
+        this.hp = new Hitpoints(hp);
         resetIterator();
 
         if (challenges.hasNext())
@@ -36,10 +36,6 @@ public class Game {
         else {
             throw new NoSuchElementException("No challenges found!");
         }
-    }
-
-    public Game(List<String> words, int hp) {
-        this(words, new Hitpoints(hp));
     }
 
     public String scrambleWord() {
