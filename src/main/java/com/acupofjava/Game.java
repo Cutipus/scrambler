@@ -151,9 +151,9 @@ public class Game {
 
 }
 
-record ScrambleOption(String characters, Set<String> allWords) {
+record ScrambleOption(Entry<String, Set<String>> entry) {
     public static ScrambleOption fromEntry(Entry<String, Set<String>> entry) {
-        return new ScrambleOption(entry.getKey(), entry.getValue());
+        return new ScrambleOption(entry);
     }
 
     public String scramble(int seed) {
@@ -161,7 +161,7 @@ record ScrambleOption(String characters, Set<String> allWords) {
         if (seed < 0)
             throw new IllegalArgumentException("Index must be non-negative!");
         Set<String> permutations = generatePermutations();
-        Set<String> nonRealWordPermutations = permutations.stream().filter(w -> !allWords.contains(w))
+        Set<String> nonRealWordPermutations = permutations.stream().filter(w -> !entry.getValue().contains(w))
                 .collect(Collectors.toSet());
         if (nonRealWordPermutations.size() == 0)
             throw new ImpossiblePermutationException("bad");
@@ -171,7 +171,7 @@ record ScrambleOption(String characters, Set<String> allWords) {
 
     private Set<String> generatePermutations() {
         Set<String> result = new HashSet<>();
-        permute("", characters, result);
+        permute("", entry.getKey(), result);
         return result;
     }
 
@@ -187,7 +187,7 @@ record ScrambleOption(String characters, Set<String> allWords) {
     }
 
     public boolean matches(String userInputText) {
-        return allWords.contains(userInputText);
+        return entry.getValue().contains(userInputText);
     }
 }
 
