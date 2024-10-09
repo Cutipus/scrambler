@@ -40,11 +40,6 @@ public class Game {
         }
     }
 
-    public String scrambleWord() {
-        lastScrambledWord = currentScrambleOption.scramble((int) (Math.random() * Integer.MAX_VALUE));
-        return lastScrambledWord;
-    }
-
     public int getHP() {
         return hp.getCurrentHP();
     }
@@ -104,6 +99,23 @@ public class Game {
         }
     }
 
+    public void restart() {
+        hp.resetHP();
+        resetIterator();
+        completedChallenges.clear();
+
+        if (challenges.hasNext())
+            currentScrambleOption = challenges.next();
+        else {
+            throw new NoSuchElementException("No challenges found!");
+        }
+    }
+
+    public String scrambleWord() {
+        lastScrambledWord = currentScrambleOption.scramble((int) (Math.random() * Integer.MAX_VALUE));
+        return lastScrambledWord;
+    }
+
     private void resetIterator() {
         List<ScrambleOption> challengeList = validWordsPermutation(words.stream()).entrySet().stream()
                 .map(ScrambleOption::fromEntry)
@@ -137,17 +149,6 @@ public class Game {
                                 .collect(Collectors.toSet())));
     }
 
-    public void restart() {
-        hp.resetHP();
-        resetIterator();
-        completedChallenges.clear();
-
-        if (challenges.hasNext())
-            currentScrambleOption = challenges.next();
-        else {
-            throw new NoSuchElementException("No challenges found!");
-        }
-    }
 }
 
 record ScrambleOption(String characters, Set<String> allWords) {
