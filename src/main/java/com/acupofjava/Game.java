@@ -42,7 +42,6 @@ public class Game {
     }
 
     public PlayResult play(String userGuess) {
-        // LOOK AT THIS
         long endTimeMS = System.currentTimeMillis();
         Duration durationSinceStartOfGame = Duration.ofMillis(endTimeMS - startTimeMS);
         Duration durationSinceStartOfLastChallenge = Duration.ofMillis(endTimeMS - currentChallengeStartTimeMS);
