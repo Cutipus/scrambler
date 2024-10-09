@@ -94,7 +94,6 @@ public class Comps {
 }
 
 class GradiantButton extends JButton {
-    // TODO: move to comps
     private Color topColor;
     private Color bottomColor;
 
@@ -117,5 +116,28 @@ class GradiantButton extends JButton {
         g2d.dispose();
 
         super.paintComponent(g);
+    }
+}
+
+class GradiantPanel extends Box {
+    private Color topColor;
+    private Color bottomColor;
+
+    public GradiantPanel(Color topColor, Color bottomColor) {
+        super(BoxLayout.X_AXIS);
+        this.topColor = topColor;
+        this.bottomColor = bottomColor;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        final Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setPaint(new GradientPaint(
+                new Point(getWidth() / 2, 0),
+                topColor,
+                new Point(getWidth() / 2, getHeight()),
+                bottomColor));
+        g2d.fillRect(0, 0, getWidth(), getHeight());
     }
 }
