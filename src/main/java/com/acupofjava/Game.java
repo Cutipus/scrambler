@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 public class Game {
     List<String> words;
-    Iterator<ScrambleOption> challenges;
-    ScrambleOption currentScrambleOption;
+    Iterator<Entry<String, Set<String>>> challenges;
+    Entry<String, Set<String>> currentScrambleOption;
     Hitpoints hp;
 
     boolean isFirstWord = true;
@@ -50,7 +50,7 @@ public class Game {
         Duration durationSinceStartOfGame = Duration.ofMillis(endTimeMS - startTimeMS);
         Duration durationSinceStartOfLastChallenge = Duration.ofMillis(endTimeMS - currentChallengeStartTimeMS);
 
-        if (matches(currentScrambleOption.entry(), userGuess)) {
+        if (matches(currentScrambleOption, userGuess)) {
             if (challenges.hasNext()) {
                 completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
                 currentChallengeStartTimeMS = System.currentTimeMillis();
@@ -112,17 +112,16 @@ public class Game {
     }
 
     public String scrambleWord() {
-        lastScrambledWord = scramble(currentScrambleOption.entry(),
+        lastScrambledWord = scramble(currentScrambleOption,
                 (int) (Math.random() * Integer.MAX_VALUE));
         return lastScrambledWord;
     }
 
     private void resetIterator() {
-        List<ScrambleOption> challengeList = validWordsPermutation(words.stream()).entrySet().stream()
-                .map(ScrambleOption::new)
-                .filter(scrambleOption -> {
+        List<Entry<String, Set<String>>> challengeList = validWordsPermutation(words.stream()).entrySet().stream()
+                .filter(entry -> {
                     try {
-                        scramble(scrambleOption.entry(), 0);
+                        scramble(entry, 0);
                         return true;
                     } catch (ImpossiblePermutationException e) {
                         return false;
@@ -130,7 +129,7 @@ public class Game {
                 })
                 .toList();
 
-        for (ScrambleOption s : challengeList) {
+        for (Entry<String, Set<String>> s : challengeList) {
             System.out.println(s);
         }
 
@@ -184,9 +183,6 @@ public class Game {
         }
     }
 
-}
-
-record ScrambleOption(Entry<String, Set<String>> entry) {
 }
 
 class ImpossiblePermutationException extends RuntimeException {
