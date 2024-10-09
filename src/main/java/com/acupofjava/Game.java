@@ -50,7 +50,7 @@ public class Game {
         Duration durationSinceStartOfGame = Duration.ofMillis(endTimeMS - startTimeMS);
         Duration durationSinceStartOfLastChallenge = Duration.ofMillis(endTimeMS - currentChallengeStartTimeMS);
 
-        if (currentScrambleOption.matches(userGuess)) {
+        if (matches(currentScrambleOption.entry(), userGuess)) {
             if (challenges.hasNext()) {
                 completedChallenges.add(new WordStat(userGuess, durationSinceStartOfLastChallenge, hpLostThisWord));
                 currentChallengeStartTimeMS = System.currentTimeMillis();
@@ -149,6 +149,10 @@ public class Game {
                                 .collect(Collectors.toSet())));
     }
 
+    public boolean matches(Entry<String, Set<String>> entry, String userInputText) {
+        return entry.getValue().contains(userInputText);
+    }
+
 }
 
 record ScrambleOption(Entry<String, Set<String>> entry) {
@@ -180,10 +184,6 @@ record ScrambleOption(Entry<String, Set<String>> entry) {
                 permute(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1, n), result);
             }
         }
-    }
-
-    public boolean matches(String userInputText) {
-        return entry.getValue().contains(userInputText);
     }
 }
 
