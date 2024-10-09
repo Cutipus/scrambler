@@ -156,12 +156,11 @@ public class Game {
     }
 
     private static void permute(String prefix, String str, Set<String> result) {
-        int n = str.length();
-        if (n == 0) {
+        if (str.length() == 0) {
             result.add(prefix);
         } else {
-            for (int i = 0; i < n; i++) {
-                permute(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1, n), result);
+            for (int i = 0; i < str.length(); i++) {
+                permute(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1, str.length()), result);
             }
         }
     }
