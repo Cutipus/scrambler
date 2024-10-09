@@ -139,7 +139,7 @@ public class Game {
     public static String scramble(Entry<String, Set<String>> entry, int seed) {
         // TODO: OPTIMIZE THIS! too slow after ~10 characters
         if (seed < 0)
-            throw new IllegalArgumentException("Index must be non-negative!");
+            throw new IllegalArgumentException("Seed must be non-negative!");
         Set<String> permutations = generatePermutations(entry);
         Set<String> nonRealWordPermutations = permutations.stream().filter(w -> !entry.getValue().contains(w))
                 .collect(Collectors.toSet());
