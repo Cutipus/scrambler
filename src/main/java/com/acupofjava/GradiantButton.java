@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 class GradiantButton extends JButton {
-
+    // TODO: move to comps
     private Color topColor;
     private Color bottomColor;
 
