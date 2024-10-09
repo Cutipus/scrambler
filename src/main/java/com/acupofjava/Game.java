@@ -31,9 +31,9 @@ public class Game {
         this.hp = new Hitpoints(hp);
         resetIterator();
 
-        if (challenges.hasNext())
+        if (challenges.hasNext()) {
             currentScrambleOption = challenges.next();
-        else {
+        } else {
             throw new NoSuchElementException("No challenges found!");
         }
     }
