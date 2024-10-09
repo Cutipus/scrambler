@@ -112,7 +112,8 @@ public class Game {
     }
 
     public String scrambleWord() {
-        lastScrambledWord = currentScrambleOption.scramble((int) (Math.random() * Integer.MAX_VALUE));
+        lastScrambledWord = ScrambleOption.scramble(currentScrambleOption.entry(),
+                (int) (Math.random() * Integer.MAX_VALUE));
         return lastScrambledWord;
     }
 
@@ -121,7 +122,7 @@ public class Game {
                 .map(ScrambleOption::new)
                 .filter(scrambleOption -> {
                     try {
-                        scrambleOption.scramble(0);
+                        ScrambleOption.scramble(scrambleOption.entry(), 0);
                         return true;
                     } catch (ImpossiblePermutationException e) {
                         return false;
@@ -156,11 +157,11 @@ public class Game {
 }
 
 record ScrambleOption(Entry<String, Set<String>> entry) {
-    public String scramble(int seed) {
+    public static String scramble(Entry<String, Set<String>> entry, int seed) {
         // TODO: OPTIMIZE THIS! too slow after ~10 characters
         if (seed < 0)
             throw new IllegalArgumentException("Index must be non-negative!");
-        Set<String> permutations = generatePermutations();
+        Set<String> permutations = generatePermutations(entry);
         Set<String> nonRealWordPermutations = permutations.stream().filter(w -> !entry.getValue().contains(w))
                 .collect(Collectors.toSet());
         if (nonRealWordPermutations.size() == 0)
@@ -169,13 +170,13 @@ record ScrambleOption(Entry<String, Set<String>> entry) {
         return (String) nonRealWordPermutations.toArray()[correctedIndex];
     }
 
-    private Set<String> generatePermutations() {
+    private static Set<String> generatePermutations(Entry<String, Set<String>> entry) {
         Set<String> result = new HashSet<>();
         permute("", entry.getKey(), result);
         return result;
     }
 
-    private void permute(String prefix, String str, Set<String> result) {
+    private static void permute(String prefix, String str, Set<String> result) {
         int n = str.length();
         if (n == 0) {
             result.add(prefix);
