@@ -140,7 +140,7 @@ public class Game {
         // TODO: OPTIMIZE THIS! too slow after ~10 characters
         if (seed < 0)
             throw new IllegalArgumentException("Seed must be non-negative!");
-        Set<String> permutations = generatePermutations(entry);
+        Set<String> permutations = generatePermutations(entry.getKey());
         Set<String> nonRealWordPermutations = permutations.stream().filter(w -> !entry.getValue().contains(w))
                 .collect(Collectors.toSet());
         if (nonRealWordPermutations.size() == 0)
@@ -149,9 +149,9 @@ public class Game {
         return (String) nonRealWordPermutations.toArray()[correctedIndex];
     }
 
-    private static Set<String> generatePermutations(Entry<String, Set<String>> entry) {
+    private static Set<String> generatePermutations(String characters) {
         Set<String> result = new HashSet<>();
-        permute("", entry.getKey(), result);
+        permute("", characters, result);
         return result;
     }
 
