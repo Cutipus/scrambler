@@ -5,6 +5,8 @@ import java.util.Set;
 
 public class App {
     private static final int STARTING_HP = 3;
+
+    // TODO: use selected_words.json
     public static final Map<String, Set<String>> words = Map.of(
             "eilv", Set.of("evil", "levi", "live", "veil", "vile", "vlei"),
             "ehllo", Set.of("hello"),
