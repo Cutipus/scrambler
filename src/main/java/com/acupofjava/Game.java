@@ -147,3 +147,36 @@ public class Game {
         }
     }
 }
+
+class Hitpoints {
+
+    private int hp;
+    private final int startingHP;
+
+    public Hitpoints(int hp) {
+        if (hp <= 0) {
+            throw new IllegalArgumentException("HP value invalid. Make sure it's 1 or greater.\nHP value: " + hp);
+        }
+        this.hp = hp;
+        startingHP = hp;
+    }
+
+    public void resetHP() {
+        this.hp = startingHP;
+    }
+
+    public int getStartingHP() {
+        return startingHP;
+    }
+
+    public int getCurrentHP() {
+        return hp;
+    }
+
+    public boolean hit() {
+        if (hp == 0)
+            throw new IllegalStateException("Can't try if you don't have HP left!");
+
+        return hp-- != 1;
+    }
+}
