@@ -112,7 +112,7 @@ public class Game {
     }
 
     public String scrambleWord() {
-        lastScrambledWord = ScrambleOption.scramble(currentScrambleOption.entry(),
+        lastScrambledWord = scramble(currentScrambleOption.entry(),
                 (int) (Math.random() * Integer.MAX_VALUE));
         return lastScrambledWord;
     }
@@ -122,7 +122,7 @@ public class Game {
                 .map(ScrambleOption::new)
                 .filter(scrambleOption -> {
                     try {
-                        ScrambleOption.scramble(scrambleOption.entry(), 0);
+                        scramble(scrambleOption.entry(), 0);
                         return true;
                     } catch (ImpossiblePermutationException e) {
                         return false;
@@ -154,9 +154,6 @@ public class Game {
         return entry.getValue().contains(userInputText);
     }
 
-}
-
-record ScrambleOption(Entry<String, Set<String>> entry) {
     public static String scramble(Entry<String, Set<String>> entry, int seed) {
         // TODO: OPTIMIZE THIS! too slow after ~10 characters
         if (seed < 0)
@@ -186,6 +183,10 @@ record ScrambleOption(Entry<String, Set<String>> entry) {
             }
         }
     }
+
+}
+
+record ScrambleOption(Entry<String, Set<String>> entry) {
 }
 
 class ImpossiblePermutationException extends RuntimeException {
