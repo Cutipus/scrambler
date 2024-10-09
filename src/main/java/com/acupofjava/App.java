@@ -1,12 +1,14 @@
 package com.acupofjava;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class App {
     private static final int STARTING_HP = 3;
-    public static final List<String> words = List.of(
-            "hello", "world", "cat", "wow", "live", "evil", "veil", "vile",
-            "cat", "act", "no", "on", "bat", "tab");
+    public static final Map<String, Set<String>> words = Map.of(
+            "eilv", Set.of("evil", "levi", "live", "veil", "vile", "vlei"),
+            "ehllo", Set.of("hello"),
+            "oww", Set.of("wow"));
 
     public static void main(String[] args) {
         Game game = new Game(words, STARTING_HP);

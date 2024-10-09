@@ -1,8 +1,6 @@
 package com.acupofjava;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -11,11 +9,10 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.ArrayList;
 
 public class Game {
-    List<String> words;
+    Map<String, Set<String>> words;
     Iterator<Entry<String, Set<String>>> challenges;
     Entry<String, Set<String>> currentScrambleOption;
     Hitpoints hp;
@@ -28,7 +25,7 @@ public class Game {
     List<WordStat> completedChallenges = new ArrayList<>();
     private String lastScrambledWord;
 
-    public Game(List<String> words, int hp) {
+    public Game(Map<String, Set<String>> words, int hp) {
         this.words = words;
         this.hp = new Hitpoints(hp);
         resetIterator();
@@ -118,7 +115,7 @@ public class Game {
     }
 
     private void resetIterator() {
-        List<Entry<String, Set<String>>> challengeList = validWordsPermutation(words.stream()).entrySet().stream()
+        List<Entry<String, Set<String>>> challengeList = words.entrySet().stream()
                 .filter(entry -> {
                     try {
                         scramble(entry, 0);
@@ -134,19 +131,6 @@ public class Game {
         }
 
         challenges = challengeList.iterator();
-    }
-
-    private Map<String, Set<String>> validWordsPermutation(Stream<String> dictionary) {
-        return dictionary.collect(
-                Collectors.toMap(
-                        word -> {
-                            char[] characters = word.toCharArray();
-                            Arrays.sort(characters);
-                            return new String(characters);
-                        },
-                        Collections::singleton,
-                        (existingValue, newValue) -> Stream.concat(existingValue.stream(), newValue.stream())
-                                .collect(Collectors.toSet())));
     }
 
     public boolean matches(Entry<String, Set<String>> entry, String userInputText) {
