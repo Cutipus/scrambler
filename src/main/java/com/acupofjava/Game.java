@@ -190,6 +190,15 @@ record ScrambleOption(String characters, Set<String> allWords) {
     }
 }
 
+class ImpossiblePermutationException extends RuntimeException {
+    public ImpossiblePermutationException() {
+    }
+
+    public ImpossiblePermutationException(String message) {
+        super(message);
+    }
+}
+
 class Hitpoints {
 
     private int hp;
