@@ -118,7 +118,7 @@ public class Game {
 
     private void resetIterator() {
         List<ScrambleOption> challengeList = validWordsPermutation(words.stream()).entrySet().stream()
-                .map(ScrambleOption::fromEntry)
+                .map(ScrambleOption::new)
                 .filter(scrambleOption -> {
                     try {
                         scrambleOption.scramble(0);
@@ -152,10 +152,6 @@ public class Game {
 }
 
 record ScrambleOption(Entry<String, Set<String>> entry) {
-    public static ScrambleOption fromEntry(Entry<String, Set<String>> entry) {
-        return new ScrambleOption(entry);
-    }
-
     public String scramble(int seed) {
         // TODO: OPTIMIZE THIS! too slow after ~10 characters
         if (seed < 0)
