@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.*;
 
@@ -68,7 +69,7 @@ public class WordChooser {
     public static HashMap<String, List<String>> loadJsonFile(File selectedWordsFile) {
         HashMap<String, List<String>> JSONWords;
         try (FileInputStream fileInputStream = new FileInputStream(selectedWordsFile);
-                InputStreamReader reader = new InputStreamReader(fileInputStream, "UTF-8")) {
+                InputStreamReader reader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8)) {
             JSONParser parser = new JSONParser();
             @SuppressWarnings("unchecked")
             HashMap<String, List<String>> _JSON = (HashMap<String, List<String>>) parser.parse(reader);
