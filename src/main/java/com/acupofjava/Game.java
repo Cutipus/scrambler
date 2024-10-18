@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -136,18 +137,26 @@ public class Game {
         return entry.getValue().contains(userInputText);
     }
 
+    // TODO: Remove seed
     public static String scramble(Entry<String, Set<String>> entry, int seed) {
-        // TODO: OPTIMIZE THIS! too slow after ~10 characters
-        // reference: https://en.wikipedia.org/wiki/Random_permutation
-        if (seed < 0)
-            throw new IllegalArgumentException("Seed must be non-negative!");
-        Set<String> permutations = generatePermutations(entry.getKey());
-        Set<String> nonRealWordPermutations = permutations.stream().filter(w -> !entry.getValue().contains(w))
-                .collect(Collectors.toSet());
-        if (nonRealWordPermutations.size() == 0)
-            throw new ImpossiblePermutationException("bad");
-        int correctedIndex = seed % nonRealWordPermutations.size();
-        return (String) nonRealWordPermutations.toArray()[correctedIndex];
+        return randomPermutation(entry.getKey(), entry.getValue());
+    }
+
+    public static String randomPermutation(String source, Set<String> permutationsToExclude) {
+        RandomGenerator randomGenerator = RandomGenerator.getDefault();
+        char[] sourceArray = source.toCharArray();
+
+        String randPermutation;
+        do {
+            for (int i = 0; i < sourceArray.length - 1; i++) {
+                int j = randomGenerator.nextInt(i, sourceArray.length);
+                char temp = sourceArray[i];
+                sourceArray[i] = sourceArray[j];
+                sourceArray[j] = temp;
+            }
+            randPermutation = new String(sourceArray);
+        } while (permutationsToExclude.contains(randPermutation));
+        return randPermutation;
     }
 
     private static Set<String> generatePermutations(String characters) {
