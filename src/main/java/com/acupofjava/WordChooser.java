@@ -27,18 +27,18 @@ public class WordChooser {
         HashMap<String, List<String>> selectedWords = loadJsonFile(selectedWordsFile);
 
         if (Objects.isNull(allTheWords)) {
-            System.err.println("Couldn't load all the words!");
+            System.out.println("Couldn't load all the words!");
             return;
         }
 
         if (Objects.isNull(selectedWords)) {
-            System.err.println("Couldn't load selected words!");
+            System.out.println("Couldn't load selected words!");
             return;
         }
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
-                System.err.print("Type word: ");
+                System.out.print("Type word: ");
                 String userInputWord;
                 try {
                     userInputWord = scanner.nextLine();
@@ -48,12 +48,31 @@ public class WordChooser {
 
                 String sortedUserInputWord = sortString(userInputWord);
 
-                if (!allTheWords.containsKey(sortedUserInputWord)) {
-                    System.err.println("Couldn't find this word: " + userInputWord);
+                if (selectedWords.containsKey(sortedUserInputWord)) {
+                    System.out.println("Word already added!");
                     continue;
                 }
 
-                selectedWords.put(sortedUserInputWord, allTheWords.get(sortedUserInputWord));
+                if (!allTheWords.containsKey(sortedUserInputWord)) {
+                    System.out.println("Couldn't find this word: " + userInputWord);
+                    continue;
+                }
+
+                List<String> permutations = allTheWords.get(sortedUserInputWord);
+                System.out.print(String.format("%s | cancel? (n/!): ", permutations));
+
+                // confirm
+                try {
+                    String confirmationInput = scanner.nextLine();
+                    if (confirmationInput.startsWith("n") || confirmationInput.startsWith("!")) {
+                        System.out.println("cancelled");
+                        continue;
+                    }
+                } catch (NoSuchElementException e) {
+                    break;
+                }
+
+                selectedWords.put(sortedUserInputWord, permutations);
             }
         }
 
@@ -90,7 +109,7 @@ public class WordChooser {
                 OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
             JSONObject.writeJSONString(selectedWords, writer);
         } catch (IOException e) {
-            System.err.println("Couldn't write the file! ");
+            System.out.println("Couldn't write the file! ");
             e.printStackTrace();
         }
     }
