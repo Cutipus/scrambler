@@ -1,7 +1,6 @@
 package com.acupofjava;
 
 import java.time.Duration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.random.RandomGenerator;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 public class Game {
@@ -158,25 +156,6 @@ public class Game {
         } while (permutationsToExclude.contains(randPermutation));
         return randPermutation;
     }
-
-    private static Set<String> generatePermutations(String characters) {
-        Set<String> result = new HashSet<>();
-        permute("", characters, result);
-        return result;
-    }
-
-    private static void permute(String prefix, String str, Set<String> result) {
-        if (str.length() == 0) {
-            result.add(prefix);
-            return;
-        }
-
-        for (int i = 0; i < str.length(); i++) {
-            permute(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1, str.length()), result);
-        }
-
-    }
-
 }
 
 class ImpossiblePermutationException extends RuntimeException {
