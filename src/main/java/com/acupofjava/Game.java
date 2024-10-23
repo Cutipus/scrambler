@@ -110,8 +110,7 @@ public class Game {
     }
 
     public String scrambleWord() {
-        lastScrambledWord = scramble(currentScrambleOption,
-                (int) (Math.random() * Integer.MAX_VALUE));
+        lastScrambledWord = scramble(currentScrambleOption);
         return lastScrambledWord;
     }
 
@@ -131,8 +130,7 @@ public class Game {
         return entry.getValue().contains(userInputText);
     }
 
-    // TODO: Remove seed
-    public static String scramble(Entry<String, Set<String>> entry, int seed) {
+    public static String scramble(Entry<String, Set<String>> entry) {
         checkEntry(entry).ifPresent(error -> {
             throw new ImpossiblePermutationException(error);
         });
