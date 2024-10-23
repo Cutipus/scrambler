@@ -146,6 +146,7 @@ public class Game {
 
         String randPermutation;
         do {
+            // https://en.wikipedia.org/wiki/Random_permutation#Fisher-Yates_shuffles
             for (int i = 0; i < sourceArray.length - 1; i++) {
                 int j = randomGenerator.nextInt(i, sourceArray.length);
                 char temp = sourceArray[i];
