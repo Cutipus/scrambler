@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.random.RandomGenerator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class Game {
     Map<String, Set<String>> words;
@@ -114,14 +117,7 @@ public class Game {
 
     private void resetIterator() {
         List<Entry<String, Set<String>>> challengeList = words.entrySet().stream()
-                .filter(entry -> {
-                    try {
-                        scramble(entry, 0);
-                        return true;
-                    } catch (ImpossiblePermutationException e) {
-                        return false;
-                    }
-                })
+                .filter(entry -> checkEntry(entry).isEmpty())
                 .toList();
 
         for (Entry<String, Set<String>> s : challengeList) {
@@ -137,6 +133,10 @@ public class Game {
 
     // TODO: Remove seed
     public static String scramble(Entry<String, Set<String>> entry, int seed) {
+        checkEntry(entry).ifPresent(error -> {
+            throw new ImpossiblePermutationException(error);
+        });
+
         return randomPermutation(entry.getKey(), entry.getValue());
     }
 
@@ -156,6 +156,61 @@ public class Game {
             randPermutation = new String(sourceArray);
         } while (permutationsToExclude.contains(randPermutation));
         return randPermutation;
+    }
+
+    private static Optional<String> checkEntry(Entry<String, Set<String>> entry) {
+        if (entry.getKey().equals(""))
+            return Optional.of("source string cannot be empty!");
+
+        if (entry.getKey().length() == 1)
+            return Optional.of("source string must be longer than 1 character!");
+
+        if (entry.getValue().size() == 0)
+            return Optional.of("Must have at least one valid word in permutationsToExclude!");
+
+        if (entry.getValue().size() == numPermutations(entry.getKey()))
+            return Optional.of("There couldn't possibly be a non-excluded permutation of source!");
+
+        for (String validWord : entry.getValue()) {
+            var sortedWord = validWord.toCharArray();
+            Arrays.sort(sortedWord);
+
+            var sortedSource = entry.getKey().toCharArray();
+            Arrays.sort(sortedSource);
+
+            if (new String(sortedSource).equals(new String(sortedWord)))
+                return Optional.of(String.format(
+                        "entry.getValue() must contain only permutations of source! source:%s  permutation:%s",
+                        entry.getKey(),
+                        validWord));
+        }
+
+        return Optional.empty();
+    }
+
+    public static int numPermutations(String s) {
+        Map<Character, Integer> repetitions = new HashMap<>();
+
+        for (char c : s.toCharArray()) {
+            repetitions.putIfAbsent(c, 0);
+            repetitions.put(c, repetitions.get(c) + 1);
+        }
+
+        var numerator = factorial(s.length());
+        var denominator = 1;
+        for (int x : repetitions.values()) {
+            denominator *= factorial(x);
+        }
+
+        return numerator / denominator;
+    }
+
+    public static int factorial(int x) {
+        int result = 1;
+        for (int i = 2; i <= x; i++) {
+            result *= i;
+        }
+        return result;
     }
 }
 
