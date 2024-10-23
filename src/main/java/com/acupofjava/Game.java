@@ -135,12 +135,8 @@ public class Game {
             throw new ImpossiblePermutationException(error);
         });
 
-        return randomPermutation(entry.getKey(), entry.getValue());
-    }
-
-    public static String randomPermutation(String source, Set<String> permutationsToExclude) {
         RandomGenerator randomGenerator = RandomGenerator.getDefault();
-        char[] sourceArray = source.toCharArray();
+        char[] sourceArray = entry.getKey().toCharArray();
 
         String randPermutation;
         do {
@@ -152,7 +148,7 @@ public class Game {
                 sourceArray[j] = temp;
             }
             randPermutation = new String(sourceArray);
-        } while (permutationsToExclude.contains(randPermutation));
+        } while (entry.getValue().contains(randPermutation));
         return randPermutation;
     }
 
