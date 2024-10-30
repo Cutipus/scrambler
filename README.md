@@ -37,6 +37,7 @@
   - [X] EPIC LOSS
     - [X] Total time
     - [X] Present user with word that defeated them
+- [X] Optimize word scramble algorithm
 - [ ] Add more challenges
 - [ ] Get new GIF for the preview
 - [ ] Get a logo for the app
@@ -45,5 +46,4 @@
 
 ### Version 2
 - [ ] Add difficulty levels
-- [ ] Optimize word scramble algorithm
 - [ ] Different color for button when armed
