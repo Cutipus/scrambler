@@ -10,9 +10,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class WordChooser {
     public static void main(String[] args) {
@@ -107,11 +109,44 @@ public class WordChooser {
     private static void saveToJsonFile(HashMap<String, List<String>> selectedWords, File selectedWordsFile) {
         try (FileOutputStream outputStream = new FileOutputStream(selectedWordsFile);
                 OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
-            JSONObject.writeJSONString(selectedWords, writer);
+            myWriteJsonString(selectedWords, writer);
         } catch (IOException e) {
             System.out.println("Couldn't write the file! ");
             e.printStackTrace();
         }
+    }
+
+    private static void myWriteJsonString(Map<String, List<String>> map, Writer out) throws IOException {
+        assert map != null;
+
+        boolean first = true;
+
+        out.write("{\n");
+        for (Entry<String, List<String>> entry : map.entrySet()) {
+            if (first)
+                first = false;
+            else
+                out.write(",\n");
+
+            out.write("    ");
+            out.write('"');
+            out.write(JSONObject.escape(entry.getKey()));
+            out.write('"');
+            out.write(": ");
+            out.write('[');
+            boolean innerFirst = true;
+            for (String permutation : entry.getValue()) {
+                if (innerFirst)
+                    innerFirst = false;
+                else
+                    out.write(", ");
+                out.write('"');
+                out.write(JSONObject.escape(permutation));
+                out.write('"');
+            }
+            out.write(']');
+        }
+        out.write("\n}");
     }
 
 }
