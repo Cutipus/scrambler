@@ -115,6 +115,12 @@ public class Game {
     }
 
     private void resetIterator() {
+        for (Entry<String, Set<String>> s : words.entrySet()) {
+            checkEntry(s).ifPresent(error -> {
+                throw new ImpossiblePermutationException(error);
+            });
+        }
+
         List<Entry<String, Set<String>>> challengeList = words.entrySet().stream()
                 .filter(entry -> checkEntry(entry).isEmpty())
                 .toList();
@@ -154,16 +160,17 @@ public class Game {
 
     private static Optional<String> checkEntry(Entry<String, Set<String>> entry) {
         if (entry.getKey().equals(""))
-            return Optional.of("source string cannot be empty!");
+            return Optional.of("source string cannot be empty! " + String.valueOf(entry));
 
         if (entry.getKey().length() == 1)
-            return Optional.of("source string must be longer than 1 character!");
+            return Optional.of("source string must be longer than 1 character! " + String.valueOf(entry));
 
         if (entry.getValue().size() == 0)
-            return Optional.of("Must have at least one valid word in permutationsToExclude!");
+            return Optional.of("Must have at least one valid word in permutationsToExclude! " + String.valueOf(entry));
 
         if (entry.getValue().size() == numPermutations(entry.getKey()))
-            return Optional.of("There couldn't possibly be a non-excluded permutation of source!");
+            return Optional
+                    .of("There couldn't possibly be a non-excluded permutation of source! " + String.valueOf(entry));
 
         for (String validWord : entry.getValue()) {
             var sortedWord = validWord.toCharArray();
@@ -172,7 +179,7 @@ public class Game {
             var sortedSource = entry.getKey().toCharArray();
             Arrays.sort(sortedSource);
 
-            if (new String(sortedSource).equals(new String(sortedWord)))
+            if (!new String(sortedSource).equals(new String(sortedWord)))
                 return Optional.of(String.format(
                         "entry.getValue() must contain only permutations of source! source:%s  permutation:%s",
                         entry.getKey(),
