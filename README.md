@@ -43,6 +43,7 @@
 - [ ] Get a logo for the app
 - [ ] Improve the look of the various game screens
 - [ ] Gray out letter of scrambled word when user is typing in word
+- [ ] Each letter should be its own label to allow for individual styling
 
 
 ### Version 2
