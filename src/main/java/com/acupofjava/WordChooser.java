@@ -122,7 +122,7 @@ public class WordChooser {
         boolean first = true;
 
         out.write("{\n");
-        for (Entry<String, List<String>> entry : map.entrySet()) {
+        for (Entry<String, List<String>> entry : map.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
             if (first)
                 first = false;
             else
