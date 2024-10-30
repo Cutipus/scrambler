@@ -42,6 +42,7 @@
 - [ ] Get new GIF for the preview
 - [ ] Get a logo for the app
 - [ ] Improve the look of the various game screens
+- [ ] Gray out letter of scrambled word when user is typing in word
 
 
 ### Version 2
