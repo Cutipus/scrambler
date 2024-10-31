@@ -21,11 +21,10 @@ public class Comps {
 
     public static Container createScreen(Color topColor, Color bottomColor, JComponent componentToPutInCenter) {
         GradiantPanel backgroundScreen = new GradiantPanel(topColor, bottomColor);
-        Box boxToHoldComponentToPutInCenter = Box.createHorizontalBox();
-        boxToHoldComponentToPutInCenter.add(Box.createHorizontalGlue());
-        boxToHoldComponentToPutInCenter.add(componentToPutInCenter);
-        boxToHoldComponentToPutInCenter.add(Box.createHorizontalGlue());
-        backgroundScreen.add(boxToHoldComponentToPutInCenter, BorderLayout.CENTER);
+        backgroundScreen.setLayout(new BorderLayout());
+        backgroundScreen.add(Box.createRigidArea(new Dimension(300,50)), BorderLayout.PAGE_START);
+        backgroundScreen.add(componentToPutInCenter, BorderLayout.CENTER);
+        backgroundScreen.add(Box.createRigidArea(new Dimension(300,50)), BorderLayout.PAGE_END);
         return backgroundScreen;
     }
 
@@ -87,8 +86,6 @@ public class Comps {
                 jcomp.setAlignmentX(Component.CENTER_ALIGNMENT);
             box.add(component);
         }
-        box.setAlignmentY(Component.CENTER_ALIGNMENT);
-        box.setAlignmentX(Component.CENTER_ALIGNMENT);
         return box;
     }
 }
@@ -119,12 +116,12 @@ class GradiantButton extends JButton {
     }
 }
 
-class GradiantPanel extends Box {
+class GradiantPanel extends JPanel {
     private Color topColor;
     private Color bottomColor;
 
     public GradiantPanel(Color topColor, Color bottomColor) {
-        super(BoxLayout.X_AXIS);
+        super();
         this.topColor = topColor;
         this.bottomColor = bottomColor;
     }
