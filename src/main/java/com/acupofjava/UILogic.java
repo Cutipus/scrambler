@@ -101,6 +101,7 @@ class GameScreen {
 
     UILogic uiLogic;
     Container gameScreen = Comps.createScreen(Color.CYAN, Color.MAGENTA, Comps.stackVertically(
+            Box.createVerticalGlue(),
             healthDisplay,
             Box.createRigidArea(new Dimension(0, 30)),
             challengeWordLabel,
@@ -109,18 +110,19 @@ class GameScreen {
                     userInput,
                     Box.createRigidArea(new Dimension(15, 0)),
                     Comps.createButton(
-                            DARK_BLUE,
+                            Color.CYAN,
                             Color.MAGENTA,
-                            Color.BLACK,
+                            Color.RED,
                             "Submit",
                             e -> uiLogic.onSubmitActionPressed(userInput.getText()))),
             Box.createRigidArea(new Dimension(0, 30)),
             Comps.createButton(
-                    DARK_BLUE,
+                    Color.CYAN,
                     Color.MAGENTA,
-                    SUNSET_PURPLE,
+                    Color.RED,
                     "Quit",
-                    e -> uiLogic.onQuitActionPressed())));
+                    e -> uiLogic.onQuitActionPressed()),
+            Box.createVerticalGlue()));
 
     public GameScreen(UILogic uiLogic) {
         this.uiLogic = uiLogic;
